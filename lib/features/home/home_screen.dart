@@ -7,6 +7,8 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/activity.dart';
 import '../../models/recommendation_condition.dart';
+import '../../models/notification_settings.dart';
+import '../../services/notification_service.dart';
 import '../../repositories/activity_repository.dart';
 import '../../repositories/auth_repository.dart';
 import '../../routing/routes.dart';
@@ -241,7 +243,68 @@ class HomeScreen extends ConsumerWidget {
                     color: AppTheme.textMutedColor,
                   ),
             ),
-            const Gap(20),
+            const Gap(16),
+
+            // 未運動リマインダー通知バナー
+            FutureBuilder<ReminderCheckResult>(
+              future: ref.watch(reminderServiceProvider).checkReminder(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data!.shouldNotify) {
+                  final res = snapshot.data!;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade50,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.amber.shade400, width: 1.5),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.notifications_active_rounded, color: Colors.amber, size: 28),
+                        const Gap(12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'リマインダー通知（${res.daysSinceLastActivity}日間あそびの記録がありません）',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: AppTheme.textDarkColor,
+                                ),
+                              ),
+                              const Gap(2),
+                              Text(
+                                '今日はお子様と一緒に15分運動してリフレッシュしませんか？',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.brown.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.amber.shade400,
+                            foregroundColor: Colors.black87,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            minimumSize: const Size(60, 30),
+                          ),
+                          onPressed: () {
+                            context.push(AppRoutes.recommendations);
+                          },
+                          child: const Text('おすすめを見る', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
 
             // クイック条件設定カード (1Tap導線)
             CustomCard(
