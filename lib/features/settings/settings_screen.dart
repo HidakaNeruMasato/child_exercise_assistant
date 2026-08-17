@@ -9,6 +9,7 @@ import '../../repositories/auth_repository.dart';
 import '../../routing/routes.dart';
 
 import '../../models/notification_settings.dart';
+import '../../repositories/history_repository.dart';
 import '../../services/notification_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -193,6 +194,15 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () {
               context.push(AppRoutes.allActivities);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.family_restroom_rounded, color: AppTheme.primaryColor),
+            title: const Text('家族間で共有（ファミリー合言葉）'),
+            subtitle: Text('合言葉: 【 ${ref.watch(familyIdProvider)} 】 (個人情報不要)'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              context.push(AppRoutes.history);
             },
           ),
           const Divider(),

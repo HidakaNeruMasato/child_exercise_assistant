@@ -86,14 +86,11 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
   }
 
   Future<void> _recordPlayed() async {
-    final user = ref.read(authRepositoryProvider).currentUser;
-    final userId = user?.uid ?? 'user_demo_123';
     if (_activity == null) return;
 
     final played = _activity!;
 
     await ref.read(historyStateProvider.notifier).recordPlay(
-          userId,
           played,
           rating: 5,
         );
