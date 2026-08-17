@@ -424,6 +424,21 @@ class HomeScreen extends ConsumerWidget {
                 );
               },
             ),
+            const Gap(24),
+            // 最下部：目立たない全件一覧への案内ボタン
+            Center(
+              child: TextButton.icon(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppTheme.textMutedColor,
+                  textStyle: const TextStyle(fontSize: 13, decoration: TextDecoration.underline),
+                ),
+                icon: const Icon(Icons.list_alt_rounded, size: 16),
+                label: const Text('すべての遊び・運動一覧を見る（全200件）'),
+                onPressed: () {
+                  context.push(AppRoutes.allActivities);
+                },
+              ),
+            ),
             const Gap(32),
           ],
         ),

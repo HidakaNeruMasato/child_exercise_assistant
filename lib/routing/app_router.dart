@@ -14,9 +14,11 @@ import '../features/settings/settings_screen.dart';
 import '../features/splash/splash_screen.dart';
 import 'routes.dart';
 
+import '../features/all_activities/all_activities_screen.dart';
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.home,
     routes: [
       GoRoute(
         path: AppRoutes.splash,
@@ -65,6 +67,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.settings,
             builder: (context, state) => const SettingsScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.allActivities,
+            builder: (context, state) => const AllActivitiesScreen(),
           ),
         ],
       ),

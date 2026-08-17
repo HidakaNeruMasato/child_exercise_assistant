@@ -21,6 +21,16 @@ class SettingsScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(20),
         children: [
           ListTile(
+            leading: const Icon(Icons.library_books_rounded, color: AppTheme.primaryColor),
+            title: const Text('すべての遊び・運動ライブラリ'),
+            subtitle: const Text('全200件の遊びをカテゴリ別・検索で見る'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              context.push(AppRoutes.allActivities);
+            },
+          ),
+          const Divider(),
+          ListTile(
             leading: const Icon(Icons.notifications_rounded, color: AppTheme.primaryColor),
             title: const Text('リマインダー・通知設定'),
             subtitle: const Text('運動や遊びの提案通知を受け取る'),
