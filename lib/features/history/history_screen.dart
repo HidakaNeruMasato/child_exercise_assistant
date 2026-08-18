@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../models/child_profile.dart';
+import '../../models/activity_history.dart';
 import '../../repositories/auth_repository.dart';
 import '../../repositories/history_repository.dart';
 import '../../routing/routes.dart';
@@ -18,6 +20,8 @@ class HistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _HistoryScreenState extends ConsumerState<HistoryScreen> {
+  String _selectedChildFilter = 'all'; // 'all' または 子どもの名前
+
   @override
   void initState() {
     super.initState();
@@ -87,8 +91,15 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   Widget build(BuildContext context) {
     final histories = ref.watch(historyStateProvider);
     final familyId = ref.watch(familyIdProvider);
+    final children = ref.watch(childrenProfilesProvider);
 
-    final totalMinutes = histories.fold<int>(0, (sum, h) => sum + h.activity.durationMinutes);
+    // 子ども別フィルタリング
+    final filteredHistories = histories.where((h) {
+      if (_selectedChildFilter == 'all') return true;
+      return h.childNames.contains(_selectedChildFilter);
+    }).toList();
+
+    final totalMinutes = filteredHistories.fold<int>(0, (sum, h) => sum + h.activity.durationMinutes);
 
     return Scaffold(
       appBar: AppBar(
@@ -133,8 +144,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       ),
                       const Gap(2),
                       Text(
-                        '合計 $totalMinutes 分運動（家族全員のあそび記録を同期中）',
-                        style: const TextStyle(fontSize: 11, color: AppTheme.textDarkColor),
+                        _selectedChildFilter == 'all'
+                            ? '家族全員のあそび合計: $totalMinutes 分'
+                            : '【$_selectedChildFilter】ちゃんの運動合計: $totalMinutes 分',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textDarkColor),
                       ),
                     ],
                   ),
@@ -151,8 +164,49 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ),
           ),
 
+          // 子ども別フィルター選択バー
+          Container(
+            height: 52,
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            color: Colors.grey.shade50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ChoiceChip(
+                    label: const Text('全員'),
+                    selected: _selectedChildFilter == 'all',
+                    onSelected: (selected) {
+                      if (selected) setState(() => _selectedChildFilter = 'all');
+                    },
+                  ),
+                ),
+                ...children.map((c) {
+                  final isSelected = _selectedChildFilter == c.name;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: ChoiceChip(
+                      avatar: Text(c.emoji),
+                      label: Text('${c.name} (${c.age}歳)'),
+                      selected: isSelected,
+                      selectedColor: AppTheme.primaryContainer,
+                      onSelected: (selected) {
+                        if (selected) {
+                          setState(() => _selectedChildFilter = c.name);
+                        } else {
+                          setState(() => _selectedChildFilter = 'all');
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+
           Expanded(
-            child: histories.isEmpty
+            child: filteredHistories.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -161,7 +215,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                             size: 64, color: AppTheme.textMutedColor.withOpacity(0.5)),
                         const Gap(16),
                         Text(
-                          'まだ実施履歴がありません',
+                          _selectedChildFilter == 'all'
+                              ? 'まだ実施履歴がありません'
+                              : '【$_selectedChildFilter】ちゃんのあそび記録はありません',
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 color: AppTheme.textMutedColor,
                               ),
@@ -179,10 +235,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.all(20),
-                    itemCount: histories.length,
+                    itemCount: filteredHistories.length,
                     separatorBuilder: (_, __) => const Gap(16),
                     itemBuilder: (context, index) {
-                      final hist = histories[index];
+                      final hist = filteredHistories[index];
                       final activity = hist.activity;
                       final dateStr = DateFormat('yyyy/MM/dd HH:mm').format(hist.playedAt);
 
@@ -218,6 +274,43 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                               ],
                             ),
                             const Gap(8),
+
+                            // 一緒にあそんだ子どもたちバッジ
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              children: hist.childNames.map((name) {
+                                final childObj = children.firstWhere(
+                                  (c) => c.name == name,
+                                  orElse: () => ChildProfile(id: 'c', name: name, age: 5, emoji: '🧒'),
+                                );
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.secondaryColor.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: AppTheme.secondaryColor.withOpacity(0.4)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(childObj.emoji, style: const TextStyle(fontSize: 12)),
+                                      const Gap(4),
+                                      Text(
+                                        '${childObj.name} (${childObj.age}歳)',
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppTheme.textDarkColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            const Gap(8),
+
                             Text(
                               activity.title,
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(

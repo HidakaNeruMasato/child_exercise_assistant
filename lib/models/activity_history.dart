@@ -7,8 +7,9 @@ class ActivityHistory {
   final String activityId;
   final Activity activity;
   final DateTime playedAt;
-  final int rating; // 1〜5 のお気に入り度評価
+  final int rating; // 1〜5 の評価
   final String? note; // 感想メモ
+  final List<String> childNames; // 一緒に遊んだ子どもたちの名前リスト (例: ['たろう', 'はなこ'])
 
   const ActivityHistory({
     required this.id,
@@ -18,6 +19,7 @@ class ActivityHistory {
     required this.playedAt,
     required this.rating,
     this.note,
+    this.childNames = const ['たろう'],
   });
 
   Map<String, dynamic> toJson() {
@@ -29,6 +31,7 @@ class ActivityHistory {
       'playedAt': playedAt.toIso8601String(),
       'rating': rating,
       'note': note,
+      'childNames': childNames,
     };
   }
 
@@ -38,11 +41,13 @@ class ActivityHistory {
       userId: json['userId'] as String? ?? '',
       activityId: json['activityId'] as String? ?? '',
       activity: Activity.fromJson(json['activity'] as Map<String, dynamic>? ?? {}),
-      playedAt: json['playedAt'] != null
-          ? DateTime.parse(json['playedAt'] as String)
-          : DateTime.now(),
+      playedAt: DateTime.tryParse(json['playedAt'] as String? ?? '') ?? DateTime.now(),
       rating: (json['rating'] as num?)?.toInt() ?? 5,
       note: json['note'] as String?,
+      childNames: (json['childNames'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const ['たろう'],
     );
   }
 }

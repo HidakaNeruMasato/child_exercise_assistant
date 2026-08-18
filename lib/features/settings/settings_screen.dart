@@ -8,6 +8,7 @@ import '../../core/theme/app_theme.dart';
 import '../../repositories/auth_repository.dart';
 import '../../routing/routes.dart';
 
+import '../../models/child_profile.dart';
 import '../../models/notification_settings.dart';
 import '../../repositories/history_repository.dart';
 import '../../services/notification_service.dart';
@@ -196,6 +197,18 @@ class SettingsScreen extends ConsumerWidget {
               context.push(AppRoutes.allActivities);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.child_care_rounded, color: AppTheme.primaryColor),
+            title: const Text('お子さまプロフィールの管理'),
+            subtitle: Text(
+              '登録中: ${ref.watch(childrenProfilesProvider).map((c) => c.name).join("・")} (無料枠最大3名)',
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              context.push(AppRoutes.history);
+            },
+          ),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.family_restroom_rounded, color: AppTheme.primaryColor),
             title: const Text('家族間で共有（ファミリー合言葉）'),

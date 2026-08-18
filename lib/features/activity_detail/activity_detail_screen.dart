@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
+import '../../models/child_profile.dart';
 import '../../models/activity.dart';
 import '../../models/scored_activity.dart';
 import '../../repositories/activity_repository.dart';
@@ -29,38 +30,31 @@ class ActivityDetailScreen extends ConsumerStatefulWidget {
 class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
   Activity? _activity;
   bool _isLoading = true;
+  List<Activity> _similarActivities = [];
 
   @override
   void initState() {
     super.initState();
-    _loadActivity();
+    _loadActivityDetail();
   }
 
-  List<Activity> _similarActivities = [];
-
-  Future<void> _loadActivity() async {
+  Future<void> _loadActivityDetail() async {
     final repo = ref.read(activityRepositoryProvider);
     final data = await repo.getActivityById(widget.activityId);
     final allActivities = await repo.getAllActivities();
 
     if (data != null && mounted) {
-      // 類似テイストの遊びを選出 (自分以外で場所/運動強度/年齢が近いもの)
+      // 類似テイストの遊びを選出
       final candidates = allActivities.where((a) => a.id != data.id).toList();
       candidates.sort((a, b) {
         int scoreA = 0;
         int scoreB = 0;
 
-        // 場所の一致
         if (a.locationTypes.any((l) => data.locationTypes.contains(l))) scoreA += 3;
         if (b.locationTypes.any((l) => data.locationTypes.contains(l))) scoreB += 3;
 
-        // 運動強度の一致
         if (a.intensityLevel == data.intensityLevel) scoreA += 2;
         if (b.intensityLevel == data.intensityLevel) scoreB += 2;
-
-        // 雨天条件の一致
-        if (a.isIndoorOk == data.isIndoorOk) scoreA += 2;
-        if (b.isIndoorOk == data.isIndoorOk) scoreB += 2;
 
         return scoreB.compareTo(scoreA);
       });
@@ -87,21 +81,101 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
 
   Future<void> _recordPlayed() async {
     if (_activity == null) return;
+    final children = ref.read(childrenProfilesProvider);
+
+    // 一緒にあそんだお子さまを選択するダイアログ
+    final List<String>? selectedChildNames = await showDialog<List<String>>(
+      context: context,
+      builder: (context) {
+        final selectedNames = Set<String>.from(children.map((c) => c.name));
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: const Row(
+                children: [
+                  Icon(Icons.child_care_rounded, color: AppTheme.primaryColor),
+                  Gap(8),
+                  Text('誰と一緒にあそびましたか？'),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '遊んだお子さまを選択して記録すると、家族全員の履歴に個別マークされます。',
+                    style: TextStyle(fontSize: 12, color: AppTheme.textMutedColor),
+                  ),
+                  const Gap(14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: children.map((child) {
+                      final isChecked = selectedNames.contains(child.name);
+                      return FilterChip(
+                        avatar: Text(child.emoji),
+                        label: Text('${child.name} (${child.age}歳)'),
+                        selected: isChecked,
+                        selectedColor: AppTheme.primaryContainer,
+                        onSelected: (val) {
+                          setDialogState(() {
+                            if (val) {
+                              selectedNames.add(child.name);
+                            } else {
+                              if (selectedNames.length > 1) {
+                                selectedNames.remove(child.name);
+                              }
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  const Gap(16),
+                  const Text(
+                    '※無料版は最大3人までのお子さまを個別に管理・選択できます。',
+                    style: TextStyle(fontSize: 11, color: AppTheme.textMutedColor),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, null),
+                  child: const Text('キャンセル'),
+                ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.check_rounded, size: 18),
+                  label: const Text('記録する'),
+                  onPressed: () {
+                    Navigator.pop(context, selectedNames.toList());
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (selectedChildNames == null || selectedChildNames.isEmpty) return;
 
     final played = _activity!;
 
     await ref.read(historyStateProvider.notifier).recordPlay(
           played,
           rating: 5,
+          childNames: selectedChildNames,
         );
 
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('「今日あそんだ！」に記録しました！おつかれさまでした🎉'),
+      SnackBar(
+        content: Text('「今日あそんだ！」に記録しました！（${selectedChildNames.join("・")}）🎉'),
         backgroundColor: AppTheme.secondaryColor,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
 

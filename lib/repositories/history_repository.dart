@@ -10,7 +10,14 @@ final familyIdProvider = StateProvider<String>((ref) {
 
 abstract class HistoryRepository {
   Future<List<ActivityHistory>> getHistories(String familyOrUserId);
-  Future<void> addHistory(String familyOrUserId, Activity activity, int rating, String? note, {String recorderName = '家族'});
+  Future<void> addHistory(
+    String familyOrUserId,
+    Activity activity,
+    int rating,
+    String? note, {
+    String recorderName = '家族',
+    List<String> childNames = const ['たろう'],
+  });
 }
 
 class FirestoreHistoryRepository implements HistoryRepository {
@@ -48,6 +55,7 @@ class FirestoreHistoryRepository implements HistoryRepository {
         playedAt: DateTime.now().subtract(const Duration(hours: 3)),
         rating: 5,
         note: '「パパ」が記録：夕方の公園で15分思い切り走りました！',
+        childNames: const ['たろう', 'はなこ'],
       ),
       ActivityHistory(
         id: 'hist_demo_2',
@@ -78,6 +86,7 @@ class FirestoreHistoryRepository implements HistoryRepository {
         playedAt: DateTime.now().subtract(const Duration(days: 1, hours: 2)),
         rating: 5,
         note: '「ママ」が記録：雨だったのでお部屋で20分ポカポカバレー',
+        childNames: const ['はなこ', 'じろう'],
       ),
     ]);
   }
@@ -90,7 +99,14 @@ class FirestoreHistoryRepository implements HistoryRepository {
   }
 
   @override
-  Future<void> addHistory(String familyOrUserId, Activity activity, int rating, String? note, {String recorderName = '家族'}) async {
+  Future<void> addHistory(
+    String familyOrUserId,
+    Activity activity,
+    int rating,
+    String? note, {
+    String recorderName = '家族',
+    List<String> childNames = const ['たろう'],
+  }) async {
     final key = familyOrUserId.trim().isEmpty ? 'user_demo_123' : familyOrUserId.trim();
     _histories.add(
       ActivityHistory(
@@ -101,6 +117,7 @@ class FirestoreHistoryRepository implements HistoryRepository {
         playedAt: DateTime.now(),
         rating: rating,
         note: note != null && note.isNotEmpty ? note : '「$recorderName」が記録',
+        childNames: childNames.isNotEmpty ? childNames : const ['たろう'],
       ),
     );
   }
@@ -128,10 +145,23 @@ class HistoryNotifier extends StateNotifier<List<ActivityHistory>> {
     state = List.from(list);
   }
 
-  Future<void> recordPlay(Activity activity, {int rating = 5, String? note, String recorderName = 'パパ・ママ'}) async {
+  Future<void> recordPlay(
+    Activity activity, {
+    int rating = 5,
+    String? note,
+    String recorderName = 'パパ・ママ',
+    List<String> childNames = const ['たろう'],
+  }) async {
     final familyId = _ref.read(familyIdProvider);
     final repo = _ref.read(historyRepositoryProvider);
-    await repo.addHistory(familyId, activity, rating, note, recorderName: recorderName);
+    await repo.addHistory(
+      familyId,
+      activity,
+      rating,
+      note,
+      recorderName: recorderName,
+      childNames: childNames,
+    );
     await loadHistories(familyId);
   }
 }
