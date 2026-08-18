@@ -5,7 +5,7 @@ class ChildProfile {
   final String id;
   final String name; // 名前 (例: "たろう")
   final int age; // 年齢
-  final String emoji; // アイコン絵文字 (例: "👦", "👧", "👶")
+  final String emoji; // アイコン絵文字 (例: "👦", "👧", "👶", "🧒")
 
   const ChildProfile({
     required this.id,
@@ -41,7 +41,7 @@ class ChildProfile {
     return ChildProfile(
       id: json['id'] as String,
       name: json['name'] as String? ?? 'お子さま',
-      age: (json['age'] as num?)?.toInt() ?? 6,
+      age: (json['age'] as num?)?.toInt() ?? 5,
       emoji: json['emoji'] as String? ?? '👦',
     );
   }
@@ -56,13 +56,14 @@ final childrenProfilesProvider =
 class ChildrenProfilesNotifier extends StateNotifier<List<ChildProfile>> {
   ChildrenProfilesNotifier()
       : super(const [
-          ChildProfile(id: 'child_1', name: 'たろう', age: 6, emoji: '👦'),
-          ChildProfile(id: 'child_2', name: 'はなこ', age: 4, emoji: '👧'),
-          ChildProfile(id: 'child_3', name: 'じろう', age: 2, emoji: '👶'),
+          // デフォルトは1人表示
+          ChildProfile(id: 'child_1', name: 'たろう', age: 5, emoji: '👦'),
         ]);
 
-  /// 無料枠制限（初期最大3人まで）
+  /// 無料枠制限（最大3人まで）
   static const int maxFreeChildren = 3;
+  /// 有料枠制限（最大6人までレイアウト拡張可能）
+  static const int maxPremiumChildren = 6;
 
   void updateChild(ChildProfile child) {
     state = state.map((c) => c.id == child.id ? child : c).toList();
@@ -70,7 +71,7 @@ class ChildrenProfilesNotifier extends StateNotifier<List<ChildProfile>> {
 
   bool addChild(String name, int age, String emoji) {
     if (state.length >= maxFreeChildren) {
-      return false; // 最大3人制限
+      return false; // 無料枠超過
     }
     final newChild = ChildProfile(
       id: 'child_${DateTime.now().millisecondsSinceEpoch}',
