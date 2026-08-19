@@ -207,14 +207,31 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          AppConstants.logoBannerPath,
-          height: 38,
-          fit: BoxFit.contain,
-          errorBuilder: (_, __, ___) => const Text(
-            AppConstants.appName,
-            style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
-          ),
+        toolbarHeight: 64,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              AppConstants.appName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textDarkColor,
+              ),
+            ),
+            const Gap(1),
+            Text(
+              AppConstants.appSubtitle,
+              style: const TextStyle(
+                fontSize: 10,
+                color: AppTheme.textMutedColor,
+                fontWeight: FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -239,45 +256,38 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 公式ロゴ＆副題ヘッダーエリア
+            // 公式ロゴ画像 白枠いっぱい大画面表示エリア
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.2)),
+                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.25), width: 1.5),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.06),
-                    blurRadius: 10,
+                    color: AppTheme.primaryColor.withOpacity(0.08),
+                    blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  Image.asset(
-                    AppConstants.logoBannerPath,
-                    height: 56,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Text(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  AppConstants.logoBannerPath,
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                  errorBuilder: (_, __, ___) => const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
                       AppConstants.appName,
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
                     ),
                   ),
-                  const Gap(8),
-                  Text(
-                    AppConstants.appSubtitle,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppTheme.textMutedColor,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
