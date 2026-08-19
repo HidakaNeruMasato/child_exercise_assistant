@@ -324,20 +324,21 @@ class HomeScreen extends ConsumerWidget {
                           color: AppTheme.primaryColor.withOpacity(0.2),
                         ),
                         const Gap(20),
-                        // PC右側: 今日のクイック気分・条件案内パネル
+                        // PC右側: 挨拶＆ウェルカム案内メッセージ
                         Expanded(
                           flex: 6,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.auto_awesome_rounded, color: AppTheme.secondaryColor, size: 20),
-                                  const Gap(6),
+                                  const Icon(Icons.waving_hand_rounded, color: AppTheme.secondaryColor, size: 22),
+                                  const Gap(8),
                                   Text(
-                                    '今日のお子さまの気分・状態は？',
+                                    'こんにちは、${user?.displayName ?? "保護者"}さま！',
                                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontSize: 15,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                           color: AppTheme.textDarkColor,
                                         ),
@@ -345,24 +346,13 @@ class HomeScreen extends ConsumerWidget {
                                 ],
                               ),
                               const Gap(8),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 6,
-                                children: ChildMoodState.values.take(4).map((mood) {
-                                  final isSelected = currentCondition.childMoodState == mood;
-                                  return ChoiceChip(
-                                    label: Text(mood.label, style: const TextStyle(fontSize: 12)),
-                                    selected: isSelected,
-                                    selectedColor: AppTheme.primaryContainer,
-                                    onSelected: (val) {
-                                      if (val) {
-                                        ref.read(recommendationConditionProvider.notifier).state =
-                                            currentCondition.copyWith(childMoodState: mood);
-                                        context.push(AppRoutes.recommendations);
-                                      }
-                                    },
-                                  );
-                                }).toList(),
+                              Text(
+                                '今日のお子さまの気分や時間、場所に合わせたぴったりな遊びをお手伝いします。さっそく下の条件から気になるものを選んでみましょう！',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppTheme.textMutedColor,
+                                  height: 1.5,
+                                ),
                               ),
                             ],
                           ),
@@ -524,7 +514,7 @@ class HomeScreen extends ConsumerWidget {
 
                   // Tap 2: おすすめ検索ボタン
                   CustomButton(
-                    text: 'この条件でおすすめを検索（決定）',
+                    text: 'この条件でおすすめを検索',
                     icon: Icons.search_rounded,
                     onPressed: () {
                       context.push(AppRoutes.recommendations);
