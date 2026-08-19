@@ -206,11 +206,11 @@ class HomeScreen extends ConsumerWidget {
     final currentCondition = ref.watch(recommendationConditionProvider);
 
     final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth <= 600;
+    final isMobile = screenWidth <= 640;
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: isMobile ? 76 : 84,
+        toolbarHeight: isMobile ? 80 : 88,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -218,21 +218,23 @@ class HomeScreen extends ConsumerWidget {
             Text(
               AppConstants.appName,
               style: TextStyle(
-                fontSize: isMobile ? 19 : 25,
+                fontSize: isMobile ? 19 : 24,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textDarkColor,
               ),
             ),
-            const Gap(2),
+            const Gap(3),
             Text(
-              AppConstants.appSubtitle,
+              isMobile
+                  ? '年齢や場所、時間に合わせて、\n今日の遊びをお手伝い。'
+                  : '年齢や場所、時間に合わせて、今日の遊びをお手伝い。',
+              textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: isMobile ? 11 : 13,
                 color: AppTheme.textMutedColor,
                 fontWeight: FontWeight.normal,
-                height: 1.2,
+                height: 1.3,
               ),
-              maxLines: isMobile ? 2 : 1,
             ),
           ],
         ),
@@ -259,46 +261,114 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 公式ロゴ画像表示エリア（PCサイズでの巨大化を防止しレスポンシブ最適化）
-            Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: isMobile ? double.infinity : 520,
-                ),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.primaryColor.withOpacity(0.25), width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppTheme.primaryColor.withOpacity(0.08),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+            // 公式ロゴ表示エリア (PCでは2カラム機能的レイアウト、スマホではコンパクト表示)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.25), width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withOpacity(0.08),
+                    blurRadius: 14,
+                    offset: const Offset(0, 4),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      AppConstants.logoBannerPath,
-                      width: double.infinity,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          AppConstants.appName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                ],
               ),
+              child: isMobile
+                  ? Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            AppConstants.logoBannerPath,
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => const Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text(
+                                AppConstants.appName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        // PC左側: ロゴ画像（上品でちょうど良いサイズ）
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            height: 140,
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              AppConstants.logoBannerPath,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => const Text(
+                                AppConstants.appName,
+                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Gap(16),
+                        Container(
+                          height: 110,
+                          width: 1,
+                          color: AppTheme.primaryColor.withOpacity(0.2),
+                        ),
+                        const Gap(20),
+                        // PC右側: 今日のクイック気分・条件案内パネル
+                        Expanded(
+                          flex: 6,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.auto_awesome_rounded, color: AppTheme.secondaryColor, size: 20),
+                                  const Gap(6),
+                                  Text(
+                                    '今日のお子さまの気分・状態は？',
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppTheme.textDarkColor,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              const Gap(8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 6,
+                                children: ChildMoodState.values.take(4).map((mood) {
+                                  final isSelected = currentCondition.childMoodState == mood;
+                                  return ChoiceChip(
+                                    label: Text(mood.label, style: const TextStyle(fontSize: 12)),
+                                    selected: isSelected,
+                                    selectedColor: AppTheme.primaryContainer,
+                                    onSelected: (val) {
+                                      if (val) {
+                                        ref.read(recommendationConditionProvider.notifier).state =
+                                            currentCondition.copyWith(childMoodState: mood);
+                                        context.push(AppRoutes.recommendations);
+                                      }
+                                    },
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
             ),
 
             // 挨拶エリア
