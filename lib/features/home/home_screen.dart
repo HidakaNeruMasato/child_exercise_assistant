@@ -205,31 +205,34 @@ class HomeScreen extends ConsumerWidget {
     final activitiesAsync = ref.watch(activityRepositoryProvider).getAllActivities();
     final currentCondition = ref.watch(recommendationConditionProvider);
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth <= 600;
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 64,
+        toolbarHeight: isMobile ? 76 : 84,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               AppConstants.appName,
-              style: const TextStyle(
-                fontSize: 18,
+              style: TextStyle(
+                fontSize: isMobile ? 19 : 25,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textDarkColor,
               ),
             ),
-            const Gap(1),
+            const Gap(2),
             Text(
               AppConstants.appSubtitle,
-              style: const TextStyle(
-                fontSize: 10,
+              style: TextStyle(
+                fontSize: isMobile ? 11 : 13,
                 color: AppTheme.textMutedColor,
                 fontWeight: FontWeight.normal,
+                height: 1.2,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              maxLines: isMobile ? 2 : 1,
             ),
           ],
         ),
@@ -256,35 +259,42 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 公式ロゴ画像 白枠いっぱい大画面表示エリア
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.25), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  AppConstants.logoBannerPath,
+            // 公式ロゴ画像表示エリア（PCサイズでの巨大化を防止しレスポンシブ最適化）
+            Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: isMobile ? double.infinity : 520,
+                ),
+                child: Container(
                   width: double.infinity,
-                  fit: BoxFit.fitWidth,
-                  errorBuilder: (_, __, ___) => const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      AppConstants.appName,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppTheme.primaryColor.withOpacity(0.25), width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryColor.withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      AppConstants.logoBannerPath,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          AppConstants.appName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                        ),
+                      ),
                     ),
                   ),
                 ),
