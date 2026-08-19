@@ -534,7 +534,7 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.info_rounded, color: AppTheme.primaryColor),
             title: const Text('アプリ情報'),
-            subtitle: const Text('バージョン 1.0.0 (Clean Architecture)'),
+            subtitle: const Text('${AppConstants.appName} v2.0'),
           ),
           const Gap(32),
 

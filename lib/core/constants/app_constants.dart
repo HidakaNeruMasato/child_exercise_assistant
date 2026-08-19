@@ -204,7 +204,10 @@ extension ParentInvolvementLevelX on ParentInvolvementLevel {
 
 /// アプリ共通定数
 class AppConstants {
-  static const String appName = '子どもの運動＆遊びアシスタント';
+  static const String appName = 'こどもと、なにしよう。';
+  static const String appSubtitle = '年齢や場所、時間に合わせて、今日の遊びをお手伝い。';
+  static const String logoBannerPath = 'assets/images/app_logo_banner.png';
+  static const String appIconPath = 'assets/images/app_icon.png';
   
   /// 推薦件数の標準制限
   static const int defaultRecommendationLimit = 5;

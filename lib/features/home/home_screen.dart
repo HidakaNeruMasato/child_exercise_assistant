@@ -207,10 +207,18 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('遊びアシスタント'),
+        title: Image.asset(
+          AppConstants.logoBannerPath,
+          height: 38,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) => const Text(
+            AppConstants.appName,
+            style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_rounded, color: AppTheme.primaryColor),
+            icon: const Icon(Icons.favorite_rounded, color: AppTheme.accentColor),
             tooltip: 'お気に入り',
             onPressed: () => context.push(AppRoutes.favorites),
           ),
@@ -231,14 +239,56 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 公式ロゴ＆副題ヘッダーエリア
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.2)),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withOpacity(0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Image.asset(
+                    AppConstants.logoBannerPath,
+                    height: 56,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) => const Text(
+                      AppConstants.appName,
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                    ),
+                  ),
+                  const Gap(8),
+                  Text(
+                    AppConstants.appSubtitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.textMutedColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             // 挨拶エリア
             Text(
               'こんにちは、${user?.displayName ?? "保護者"}さま！',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 22),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20, color: AppTheme.textDarkColor),
             ),
             const Gap(4),
             Text(
-              '今日はどんな遊びをしますか？条件を選ぶだけで最適なおすすめが見つかります。',
+              '今日のお子さまの気分や時間に合わせて最適なおすすめが見つかります。',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppTheme.textMutedColor,
                   ),

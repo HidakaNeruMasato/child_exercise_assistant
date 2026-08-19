@@ -3,17 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// 温かみのある親しみやすい保護者向けMaterial3テーマ定義
 class AppTheme {
-  // カラーパレット
-  static const Color primaryColor = Color(0xFFFF6F61); // ウォームコーラル
-  static const Color primaryContainer = Color(0xFFFFDACC);
-  static const Color secondaryColor = Color(0xFF4DB6AC); // パステルミント
-  static const Color secondaryContainer = Color(0xFFB2DFDB);
-  static const Color tertiaryColor = Color(0xFFFFA000); // ソフトアンバー
-  static const Color backgroundColor = Color(0xFFFAF6F0); // 暖かみのあるウォームホワイト
+  // 新バージョン指定カラーパレット
+  static const Color primaryColor = Color(0xFF4F8A83); // #4F8A83 Deep Warm Green
+  static const Color primaryContainer = Color(0xFFE3EFEF);
+  static const Color secondaryColor = Color(0xFFE9B872); // #E9B872 Soft Warm Yellow
+  static const Color secondaryContainer = Color(0xFFFBF2E3);
+  static const Color accentColor = Color(0xFFE98272); // #E98272 Warm Coral
+  static const Color tertiaryColor = Color(0xFFE9B872); // 互換用
+  static const Color backgroundColor = Color(0xFFF8F6F1); // #F8F6F1 Ivory Natural White
   static const Color surfaceColor = Color(0xFFFFFFFF);
-  static const Color textDarkColor = Color(0xFF2C3E50);
-  static const Color textMutedColor = Color(0xFF7F8C8D);
-  static const Color cardBorderColor = Color(0xFFF0E5D8);
+  static const Color textDarkColor = Color(0xFF34413F); // #34413F Dark Charcoal Green
+  static const Color textMutedColor = Color(0xFF6B7C79);
+  static const Color cardBorderColor = Color(0xFFE8E5DC);
 
   /// 丸みのある角丸radius定義
   static const double cardRadius = 24.0;

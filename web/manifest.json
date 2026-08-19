@@ -1,11 +1,11 @@
 {
-    "name": "child_exercise_assistant",
-    "short_name": "child_exercise_assistant",
+    "name": "こどもと、なにしよう。",
+    "short_name": "こどもとなにしよう",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F8F6F1",
+    "theme_color": "#4F8A83",
+    "description": "年齢や場所、時間に合わせて、今日の遊びをお手伝い。",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
