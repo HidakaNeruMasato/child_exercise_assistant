@@ -80,32 +80,28 @@ class HomeScreen extends ConsumerWidget {
                           ],
                         ),
                         const Gap(8),
-                        SizedBox(
-                          height: 40,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 11, // 2歳〜12歳
-                            separatorBuilder: (_, __) => const Gap(6),
-                            itemBuilder: (context, index) {
-                              final age = index + 2;
-                              final isSelected = currentCond.childAge == age;
-                              return ChoiceChip(
-                                label: Text('$age歳'),
-                                selected: isSelected,
-                                selectedColor: AppTheme.primaryColor,
-                                labelStyle: TextStyle(
-                                  color: isSelected ? Colors.white : AppTheme.textDarkColor,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                ),
-                                onSelected: (val) {
-                                  if (val) {
-                                    ref.read(recommendationConditionProvider.notifier).state =
-                                        currentCond.copyWith(childAge: age);
-                                  }
-                                },
-                              );
-                            },
-                          ),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: List.generate(11, (index) {
+                            final age = index + 2;
+                            final isSelected = currentCond.childAge == age;
+                            return ChoiceChip(
+                              label: Text('$age歳'),
+                              selected: isSelected,
+                              selectedColor: AppTheme.primaryColor,
+                              labelStyle: TextStyle(
+                                color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              onSelected: (val) {
+                                if (val) {
+                                  ref.read(recommendationConditionProvider.notifier).state =
+                                      currentCond.copyWith(childAge: age);
+                                }
+                              },
+                            );
+                          }),
                         ),
                         const Gap(16),
 
@@ -687,69 +683,37 @@ class HomeScreen extends ConsumerWidget {
                   return const Text('表示できる遊びがありません');
                 }
 
-                return SizedBox(
-                  height: 220,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: list.length,
-                    separatorBuilder: (_, __) => const Gap(16),
-                    itemBuilder: (context, index) {
-                      final item = list[index];
-                      return SizedBox(
-                        width: 240,
-                        child: CustomCard(
-                          padding: const EdgeInsets.all(16),
-                          onTap: () {
-                            // Tap 3: 詳細画面へ
-                            context.push(AppRoutes.buildActivityDetailPath(item.id));
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  color: AppTheme.secondaryContainer.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.sports_kabaddi_rounded,
-                                    size: 40,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                              const Gap(10),
-                              Text(
-                                item.title,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontSize: 16,
-                                    ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const Gap(6),
-                              Row(
-                                children: [
-                                  TagChip(
-                                    label: '${item.minAge}〜${item.maxAge}歳',
-                                    backgroundColor: AppTheme.primaryContainer.withOpacity(0.4),
-                                  ),
-                                  const Gap(6),
-                                  TagChip(
-                                    label: '${item.durationMinutes}分',
-                                    backgroundColor: AppTheme.secondaryContainer.withOpacity(0.4),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                if (isMobile) {
+                  // スマホ時: 横スライド表示
+                  return SizedBox(
+                    height: 230,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: list.length,
+                      separatorBuilder: (_, __) => const Gap(16),
+                      itemBuilder: (context, index) {
+                        final item = list[index];
+                        return SizedBox(
+                          width: 240,
+                          child: _buildPopularActivityCard(context, item),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  // PC時: スライドせず画面幅にピタッと収まる4件を表示
+                  final pcItems = list.take(4).toList();
+                  return Row(
+                    children: pcItems.map((item) {
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: _buildPopularActivityCard(context, item),
                         ),
                       );
-                    },
-                  ),
-                );
+                    }).toList(),
+                  );
+                }
               },
             ),
             const Gap(24),
@@ -770,6 +734,83 @@ class HomeScreen extends ConsumerWidget {
             const Gap(32),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPopularActivityCard(BuildContext context, Activity item) {
+    return CustomCard(
+      padding: const EdgeInsets.all(16),
+      onTap: () {
+        context.push(AppRoutes.buildActivityDetailPath(item.id));
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 90,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppTheme.secondaryContainer.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: item.imageUrl != null
+                  ? Image.asset(
+                      item.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Icon(
+                          Icons.sports_kabaddi_rounded,
+                          size: 40,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Icon(
+                        Icons.sports_kabaddi_rounded,
+                        size: 40,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+            ),
+          ),
+          const Gap(10),
+          Text(
+            item.title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const Gap(4),
+          Text(
+            item.description,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.textMutedColor,
+                ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const Gap(6),
+          Row(
+            children: [
+              TagChip(
+                label: '${item.minAge}〜${item.maxAge}歳',
+                backgroundColor: AppTheme.primaryContainer.withOpacity(0.4),
+              ),
+              const Gap(6),
+              TagChip(
+                label: '${item.durationMinutes}分',
+                backgroundColor: AppTheme.secondaryContainer.withOpacity(0.4),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

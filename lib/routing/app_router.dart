@@ -91,10 +91,9 @@ class MainShellLayout extends StatelessWidget {
 
   int _calculateSelectedIndex(String loc) {
     if (loc.startsWith(AppRoutes.home)) return 0;
-    if (loc.startsWith(AppRoutes.recommendations)) return 1;
+    if (loc.startsWith(AppRoutes.recommendations) || loc.startsWith(AppRoutes.allActivities)) return 1;
     if (loc.startsWith(AppRoutes.favorites)) return 2;
     if (loc.startsWith(AppRoutes.history)) return 3;
-    if (loc.startsWith(AppRoutes.profile)) return 4;
     return 0;
   }
 
@@ -111,9 +110,6 @@ class MainShellLayout extends StatelessWidget {
         break;
       case 3:
         context.go(AppRoutes.history);
-        break;
-      case 4:
-        context.go(AppRoutes.profile);
         break;
     }
   }
@@ -150,9 +146,9 @@ class MainShellLayout extends StatelessWidget {
               label: 'ホーム',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.recommend_rounded),
-              activeIcon: Icon(Icons.recommend_rounded, color: AppTheme.primaryColor),
-              label: 'おすすめ',
+              icon: Icon(Icons.search_rounded),
+              activeIcon: Icon(Icons.search_rounded, color: AppTheme.primaryColor),
+              label: '探す',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite_rounded),
@@ -162,12 +158,7 @@ class MainShellLayout extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.history_rounded),
               activeIcon: Icon(Icons.history_rounded, color: AppTheme.primaryColor),
-              label: '履歴',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              activeIcon: Icon(Icons.person_rounded, color: AppTheme.primaryColor),
-              label: 'マイページ',
+              label: '記録',
             ),
           ],
         ),

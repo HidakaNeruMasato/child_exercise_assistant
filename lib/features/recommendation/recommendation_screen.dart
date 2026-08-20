@@ -88,31 +88,27 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
                       Text('子どもの年齢: ${condition.childAge}歳',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
                       const Gap(6),
-                      SizedBox(
-                        height: 38,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 11, // 2歳〜12歳
-                          separatorBuilder: (_, __) => const Gap(6),
-                          itemBuilder: (context, index) {
-                            final age = index + 2;
-                            final isSelected = condition.childAge == age;
-                            return ChoiceChip(
-                              label: Text('$age歳'),
-                              selected: isSelected,
-                              selectedColor: AppTheme.primaryColor,
-                              labelStyle: TextStyle(
-                                color: isSelected ? Colors.white : AppTheme.textDarkColor,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                              ),
-                              onSelected: (val) {
-                                if (val) {
-                                  _updateCondition(condition.copyWith(childAge: age));
-                                }
-                              },
-                            );
-                          },
-                        ),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: List.generate(11, (index) {
+                          final age = index + 2;
+                          final isSelected = condition.childAge == age;
+                          return ChoiceChip(
+                            label: Text('$age歳'),
+                            selected: isSelected,
+                            selectedColor: AppTheme.primaryColor,
+                            labelStyle: TextStyle(
+                              color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            ),
+                            onSelected: (val) {
+                              if (val) {
+                                _updateCondition(condition.copyWith(childAge: age));
+                              }
+                            },
+                          );
+                        }),
                       ),
                       const Gap(12),
 
