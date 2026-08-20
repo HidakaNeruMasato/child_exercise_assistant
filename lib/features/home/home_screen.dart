@@ -371,20 +371,11 @@ class HomeScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_rounded, color: AppTheme.accentColor),
-            tooltip: 'お気に入り',
-            onPressed: () => context.push(AppRoutes.favorites),
-          ),
-          IconButton(
-            icon: const Icon(Icons.history_rounded),
-            tooltip: '履歴',
-            onPressed: () => context.push(AppRoutes.history),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_rounded),
+            icon: const Icon(Icons.settings_rounded, size: 26),
             tooltip: '設定',
             onPressed: () => context.push(AppRoutes.settings),
           ),
+          const Gap(4),
         ],
       ),
       body: SingleChildScrollView(
@@ -392,114 +383,20 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 公式ロゴ表示エリア (PCでは2カラム機能的レイアウト、スマホではコンパクト表示)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.25), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.08),
-                    blurRadius: 14,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: isMobile
-                  ? Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            AppConstants.logoBannerPath,
-                            width: double.infinity,
-                            fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => const Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text(
-                                AppConstants.appName,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        // PC左側: ロゴ画像（上品でちょうど良いサイズ）
-                        Expanded(
-                          flex: 5,
-                          child: Container(
-                            height: 140,
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              AppConstants.logoBannerPath,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Text(
-                                AppConstants.appName,
-                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Gap(16),
-                        Container(
-                          height: 110,
-                          width: 1,
-                          color: AppTheme.primaryColor.withOpacity(0.2),
-                        ),
-                        const Gap(20),
-                        // PC右側: 挨拶＆ウェルカム案内メッセージ
-                        Expanded(
-                          flex: 6,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(Icons.waving_hand_rounded, color: AppTheme.secondaryColor, size: 22),
-                                  const Gap(8),
-                                  Text(
-                                    'こんにちは、${user?.displayName ?? "保護者"}さま！',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.textDarkColor,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(8),
-                              Text(
-                                '今日のお子さまの気分や時間、場所に合わせたぴったりな遊びをお手伝いします。さっそく下の条件から気になるものを選んでみましょう！',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: AppTheme.textMutedColor,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-
             // 挨拶エリア
-            Text(
-              'こんにちは、${user?.displayName ?? "保護者"}さま！',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20, color: AppTheme.textDarkColor),
+            Row(
+              children: [
+                const Icon(Icons.waving_hand_rounded, color: AppTheme.secondaryColor, size: 22),
+                const Gap(8),
+                Text(
+                  'こんにちは、${user?.displayName ?? "保護者"}さま！',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20, color: AppTheme.textDarkColor, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             const Gap(4),
             Text(
-              '今日のお子さまの気分や時間に合わせて最適なおすすめが見つかります。',
+              '今日のお子さまの気分や時間、場所に合わせたぴったりな遊びをお手伝いします。',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppTheme.textMutedColor,
                   ),

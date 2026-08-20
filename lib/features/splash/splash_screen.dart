@@ -23,7 +23,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _checkInitialAuth() async {
-    await Future.delayed(const Duration(milliseconds: 1500));
+    // 一般的なアプリのスプラッシュ表示時間（約1.8秒）
+    await Future.delayed(const Duration(milliseconds: 1800));
     if (!mounted) return;
 
     final authRepo = ref.read(authRepositoryProvider);
@@ -37,45 +38,49 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.primaryColor,
+      backgroundColor: AppTheme.backgroundColor, // #F8F6F1
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // アプリ起動時の全画面公式ロゴ表示 (約1.8秒)
+              Image.asset(
+                AppConstants.logoBannerPath,
+                width: 360,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Column(
+                  children: [
+                    Image.asset(AppConstants.appIconPath, width: 120),
+                    const Gap(16),
+                    Text(
+                      AppConstants.appName,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppTheme.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                    ),
+                    const Gap(8),
+                    const Text(
+                      AppConstants.appSubtitle,
+                      style: TextStyle(color: AppTheme.textMutedColor, fontSize: 13),
+                    ),
+                  ],
+                ),
               ),
-              child: const Icon(
-                Icons.directions_run_rounded,
-                size: 72,
-                color: AppTheme.primaryColor,
+              const Gap(36),
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: AppTheme.primaryColor,
+                ),
               ),
-            ),
-            const Gap(24),
-            Text(
-              AppConstants.appName,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const Gap(12),
-            Text(
-              '今日は何してあそばせよう？をすぐ解決',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-            ),
-            const Gap(48),
-            const CircularProgressIndicator(
-              color: Colors.white,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
