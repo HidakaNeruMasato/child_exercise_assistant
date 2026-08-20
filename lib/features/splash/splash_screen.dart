@@ -27,11 +27,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     await Future.delayed(const Duration(milliseconds: 1800));
     if (!mounted) return;
 
-    final authRepo = ref.read(authRepositoryProvider);
-    if (authRepo.currentUser != null) {
+    try {
+      final authRepo = ref.read(authRepositoryProvider);
+      if (authRepo.currentUser != null) {
+        context.go(AppRoutes.home);
+      } else {
+        context.go(AppRoutes.home); // ゲストモードとして直接ホームへ案内
+      }
+    } catch (_) {
       context.go(AppRoutes.home);
-    } else {
-      context.go(AppRoutes.login);
     }
   }
 
