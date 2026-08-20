@@ -84,47 +84,63 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 年齢スライダー
-                      Row(
-                        children: [
-                          Text('子どもの年齢: ${condition.childAge}歳',
-                              style: Theme.of(context).textTheme.bodyLarge),
-                          Expanded(
-                            child: Slider(
-                              value: condition.childAge.toDouble(),
-                              min: 2,
-                              max: 12,
-                              divisions: 10,
-                              label: '${condition.childAge}歳',
-                              onChanged: (val) {
-                                _updateCondition(condition.copyWith(childAge: val.round()));
+                      // 年齢（数字直接タップ）
+                      Text('子どもの年齢: ${condition.childAge}歳',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                      const Gap(6),
+                      SizedBox(
+                        height: 38,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 11, // 2歳〜12歳
+                          separatorBuilder: (_, __) => const Gap(6),
+                          itemBuilder: (context, index) {
+                            final age = index + 2;
+                            final isSelected = condition.childAge == age;
+                            return ChoiceChip(
+                              label: Text('$age歳'),
+                              selected: isSelected,
+                              selectedColor: AppTheme.primaryColor,
+                              labelStyle: TextStyle(
+                                color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              onSelected: (val) {
+                                if (val) {
+                                  _updateCondition(condition.copyWith(childAge: age));
+                                }
                               },
-                            ),
-                          ),
-                        ],
+                            );
+                          },
+                        ),
                       ),
-                      const Gap(8),
+                      const Gap(12),
 
-                      // 人数スライダー
-                      Row(
-                        children: [
-                          Text('人数: ${condition.participantCount}人',
-                              style: Theme.of(context).textTheme.bodyLarge),
-                          Expanded(
-                            child: Slider(
-                              value: condition.participantCount.toDouble(),
-                              min: 1,
-                              max: 8,
-                              divisions: 7,
-                              label: '${condition.participantCount}人',
-                              onChanged: (val) {
-                                _updateCondition(condition.copyWith(participantCount: val.round()));
-                              },
+                      // 人数（数字直接タップ）
+                      Text('人数: ${condition.participantCount}人',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+                      const Gap(6),
+                      Wrap(
+                        spacing: 8,
+                        children: [1, 2, 3, 4, 5, 6].map((count) {
+                          final isSelected = condition.participantCount == count;
+                          return ChoiceChip(
+                            label: Text('$count人'),
+                            selected: isSelected,
+                            selectedColor: AppTheme.primaryColor,
+                            labelStyle: TextStyle(
+                              color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                             ),
-                          ),
-                        ],
+                            onSelected: (val) {
+                              if (val) {
+                                _updateCondition(condition.copyWith(participantCount: count));
+                              }
+                            },
+                          );
+                        }).toList(),
                       ),
-                      const Gap(8),
+                      const Gap(12),
 
                       // 今日の子どもの状態選択
                       Text('今日の子どもの状態:', style: Theme.of(context).textTheme.bodyLarge),

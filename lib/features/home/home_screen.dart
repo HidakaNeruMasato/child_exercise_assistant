@@ -20,178 +20,313 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   void _showConditionEditModal(BuildContext context, WidgetRef ref) {
-    final condition = ref.read(recommendationConditionProvider);
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
-        return Consumer(
-          builder: (context, ref, child) {
-            final currentCond = ref.watch(recommendationConditionProvider);
+        bool showDetails = false;
 
-            return Padding(
-              padding: EdgeInsets.only(
-                top: 24,
-                left: 24,
-                right: 24,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Consumer(
+              builder: (context, ref, child) {
+                final currentCond = ref.watch(recommendationConditionProvider);
+
+                return Padding(
+                  padding: EdgeInsets.only(
+                    top: 20,
+                    left: 20,
+                    right: 20,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '游ぶ条件の変更',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '遊ぶ条件の変更',
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.textDarkColor,
+                                  ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close_rounded),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close_rounded),
+                        const Divider(),
+                        const Gap(8),
+
+                        // 1. 年齢（数字直接タップUI）
+                        Row(
+                          children: [
+                            const Icon(Icons.child_care_rounded, size: 20, color: AppTheme.primaryColor),
+                            const Gap(6),
+                            Text(
+                              '年齢: ${currentCond.childAge}歳',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const Gap(8),
+                        SizedBox(
+                          height: 40,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 11, // 2歳〜12歳
+                            separatorBuilder: (_, __) => const Gap(6),
+                            itemBuilder: (context, index) {
+                              final age = index + 2;
+                              final isSelected = currentCond.childAge == age;
+                              return ChoiceChip(
+                                label: Text('$age歳'),
+                                selected: isSelected,
+                                selectedColor: AppTheme.primaryColor,
+                                labelStyle: TextStyle(
+                                  color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                ),
+                                onSelected: (val) {
+                                  if (val) {
+                                    ref.read(recommendationConditionProvider.notifier).state =
+                                        currentCond.copyWith(childAge: age);
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        const Gap(16),
+
+                        // 2. 実施場所
+                        Row(
+                          children: [
+                            const Icon(Icons.place_rounded, size: 20, color: AppTheme.primaryColor),
+                            const Gap(6),
+                            Text('実施場所:', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        const Gap(8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 6,
+                          children: LocationType.values.map((loc) {
+                            final isSelected = currentCond.locationType == loc;
+                            return ChoiceChip(
+                              label: Text(loc.label),
+                              selected: isSelected,
+                              selectedColor: AppTheme.primaryColor,
+                              labelStyle: TextStyle(
+                                color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              onSelected: (selected) {
+                                if (selected) {
+                                  ref.read(recommendationConditionProvider.notifier).state =
+                                      currentCond.copyWith(locationType: loc);
+                                }
+                              },
+                            );
+                          }).toList(),
+                        ),
+                        const Gap(16),
+
+                        // 3. 想定時間（数字直接タップUI）
+                        Row(
+                          children: [
+                            const Icon(Icons.timer_rounded, size: 20, color: AppTheme.primaryColor),
+                            const Gap(6),
+                            Text(
+                              '想定時間: ${currentCond.availableTimeMinutes}分',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const Gap(8),
+                        Wrap(
+                          spacing: 8,
+                          children: [10, 15, 20, 30, 45, 60].map((mins) {
+                            final isSelected = currentCond.availableTimeMinutes == mins;
+                            return ChoiceChip(
+                              label: Text('$mins分'),
+                              selected: isSelected,
+                              selectedColor: AppTheme.primaryColor,
+                              labelStyle: TextStyle(
+                                color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              onSelected: (val) {
+                                if (val) {
+                                  ref.read(recommendationConditionProvider.notifier).state =
+                                      currentCond.copyWith(availableTimeMinutes: mins);
+                                }
+                              },
+                            );
+                          }).toList(),
+                        ),
+                        const Gap(16),
+
+                        // 4. 参加人数（数字直接タップUI）
+                        Row(
+                          children: [
+                            const Icon(Icons.groups_rounded, size: 20, color: AppTheme.primaryColor),
+                            const Gap(6),
+                            Text(
+                              '参加人数: ${currentCond.participantCount}人',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const Gap(8),
+                        Wrap(
+                          spacing: 8,
+                          children: [1, 2, 3, 4, 5, 6].map((count) {
+                            final isSelected = currentCond.participantCount == count;
+                            return ChoiceChip(
+                              label: Text('$count人'),
+                              selected: isSelected,
+                              selectedColor: AppTheme.primaryColor,
+                              labelStyle: TextStyle(
+                                color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              onSelected: (val) {
+                                if (val) {
+                                  ref.read(recommendationConditionProvider.notifier).state =
+                                      currentCond.copyWith(participantCount: count);
+                                }
+                              },
+                            );
+                          }).toList(),
+                        ),
+                        const Gap(16),
+
+                        // 詳細設定 切り替えボタン
+                        Center(
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppTheme.primaryColor,
+                              side: BorderSide(color: AppTheme.primaryColor.withOpacity(0.4)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            ),
+                            icon: Icon(
+                              showDetails ? Icons.expand_less_rounded : Icons.tune_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              showDetails ? '詳細設定を閉じる' : '【詳細】お子さまの状態・天候・季節など',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            onPressed: () {
+                              setModalState(() {
+                                showDetails = !showDetails;
+                              });
+                            },
+                          ),
+                        ),
+
+                        // 詳細設定 展開エリア
+                        if (showDetails) ...[
+                          const Gap(16),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppTheme.backgroundColor,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppTheme.cardBorderColor),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 今日の子どもの状態
+                                Text('今日の子どもの状態:', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                                const Gap(8),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 6,
+                                  children: ChildMoodState.values.map((m) {
+                                    final isSelected = currentCond.childMoodState == m;
+                                    return ChoiceChip(
+                                      label: Text(m.label),
+                                      selected: isSelected,
+                                      selectedColor: AppTheme.secondaryColor,
+                                      labelStyle: TextStyle(
+                                        color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                      ),
+                                      onSelected: (selected) {
+                                        if (selected) {
+                                          ref.read(recommendationConditionProvider.notifier).state =
+                                              currentCond.copyWith(childMoodState: m);
+                                        }
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                                const Gap(14),
+
+                                // 季節
+                                Text('季節:', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                                const Gap(8),
+                                Wrap(
+                                  spacing: 8,
+                                  children: Season.values.map((s) {
+                                    final isSelected = currentCond.season == s;
+                                    return ChoiceChip(
+                                      label: Text(s.label),
+                                      selected: isSelected,
+                                      selectedColor: AppTheme.secondaryColor,
+                                      labelStyle: TextStyle(
+                                        color: isSelected ? Colors.white : AppTheme.textDarkColor,
+                                      ),
+                                      onSelected: (selected) {
+                                        if (selected) {
+                                          ref.read(recommendationConditionProvider.notifier).state =
+                                              currentCond.copyWith(season: s);
+                                        }
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                                const Gap(14),
+
+                                // 雨天スイッチ
+                                SwitchListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  title: const Text('今日は雨が降っている', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                  subtitle: const Text('屋内・雨天OKな遊びを中心に検索', style: TextStyle(fontSize: 12)),
+                                  value: currentCond.isRaining,
+                                  activeColor: AppTheme.primaryColor,
+                                  onChanged: (val) {
+                                    ref.read(recommendationConditionProvider.notifier).state =
+                                        currentCond.copyWith(isRaining: val);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        const Gap(20),
+
+                        CustomButton(
+                          text: '設定を決定して閉じる',
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
                     ),
-                    const Divider(),
-                    const Gap(12),
-
-                    // 年齢
-                    Text('子どもの年齢: ${currentCond.childAge}歳',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    Slider(
-                      value: currentCond.childAge.toDouble(),
-                      min: 2,
-                      max: 12,
-                      divisions: 10,
-                      label: '${currentCond.childAge}歳',
-                      onChanged: (val) {
-                        ref.read(recommendationConditionProvider.notifier).state =
-                            currentCond.copyWith(childAge: val.round());
-                      },
-                    ),
-                    const Gap(12),
-
-                    // 人数
-                    Text('参加人数: ${currentCond.participantCount}人',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    Slider(
-                      value: currentCond.participantCount.toDouble(),
-                      min: 1,
-                      max: 8,
-                      divisions: 7,
-                      label: '${currentCond.participantCount}人',
-                      onChanged: (val) {
-                        ref.read(recommendationConditionProvider.notifier).state =
-                            currentCond.copyWith(participantCount: val.round());
-                      },
-                    ),
-                    const Gap(12),
-
-                    // 場所
-                    Text('実施場所:', style: Theme.of(context).textTheme.titleMedium),
-                    const Gap(8),
-                    Wrap(
-                      spacing: 8,
-                      children: LocationType.values.map((loc) {
-                        final isSelected = currentCond.locationType == loc;
-                        return ChoiceChip(
-                          label: Text(loc.label),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            if (selected) {
-                              ref.read(recommendationConditionProvider.notifier).state =
-                                  currentCond.copyWith(locationType: loc);
-                            }
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const Gap(16),
-
-                    // 想定時間
-                    Text('想定時間: ${currentCond.availableTimeMinutes}分',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    Slider(
-                      value: currentCond.availableTimeMinutes.toDouble(),
-                      min: 10,
-                      max: 60,
-                      divisions: 10,
-                      label: '${currentCond.availableTimeMinutes}分',
-                      onChanged: (val) {
-                        ref.read(recommendationConditionProvider.notifier).state =
-                            currentCond.copyWith(availableTimeMinutes: val.round());
-                      },
-                    ),
-                    const Gap(12),
-
-                    // 今日の子どもの状態
-                    Text('今日の子どもの状態:', style: Theme.of(context).textTheme.titleMedium),
-                    const Gap(8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children: ChildMoodState.values.map((m) {
-                        final isSelected = currentCond.childMoodState == m;
-                        return ChoiceChip(
-                          label: Text(m.label),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            if (selected) {
-                              ref.read(recommendationConditionProvider.notifier).state =
-                                  currentCond.copyWith(childMoodState: m);
-                            }
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const Gap(16),
-
-                    // 季節
-                    Text('季節:', style: Theme.of(context).textTheme.titleMedium),
-                    const Gap(8),
-                    Wrap(
-                      spacing: 8,
-                      children: Season.values.map((s) {
-                        final isSelected = currentCond.season == s;
-                        return ChoiceChip(
-                          label: Text(s.label),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            if (selected) {
-                              ref.read(recommendationConditionProvider.notifier).state =
-                                  currentCond.copyWith(season: s);
-                            }
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const Gap(16),
-
-                    // 雨天スイッチ
-                    SwitchListTile(
-                      title: const Text('今日は雨が降っている'),
-                      subtitle: const Text('屋内・雨天OKな遊びを中心に検索'),
-                      value: currentCond.isRaining,
-                      onChanged: (val) {
-                        ref.read(recommendationConditionProvider.notifier).state =
-                            currentCond.copyWith(isRaining: val);
-                      },
-                    ),
-                    const Gap(20),
-
-                    CustomButton(
-                      text: '設定を反映して閉じる',
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             );
           },
         );
