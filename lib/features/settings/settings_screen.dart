@@ -12,6 +12,7 @@ import '../../models/child_profile.dart';
 import '../../models/notification_settings.dart';
 import '../../repositories/history_repository.dart';
 import '../../services/notification_service.dart';
+import '../../shared/widgets/feedback_dialog.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -515,6 +516,22 @@ class SettingsScreen extends ConsumerWidget {
             ),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => _showNotificationSettingsModal(context, ref),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.rate_review_rounded, color: AppTheme.primaryColor),
+            title: const Text('アプリへのご意見・ご要望（フィードバック）'),
+            subtitle: const Text('使い勝手や新機能のご要望をお聞かせください'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => FeedbackDialog.showAppFeedback(context),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.dashboard_customize_rounded, color: AppTheme.secondaryColor),
+            title: const Text('フィードバック管理ダッシュボード'),
+            subtitle: const Text('ユーザーの評価・ご意見・満足度統計の集計'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push(AppRoutes.feedbackDashboard),
           ),
           const Divider(),
           ListTile(

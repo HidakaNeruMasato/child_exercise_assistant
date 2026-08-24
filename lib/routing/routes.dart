@@ -9,6 +9,7 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String settings = '/settings';
   static const String allActivities = '/all-activities';
+  static const String feedbackDashboard = '/feedback-dashboard';
 
   static String buildActivityDetailPath(String id) => '/activity/$id';
 }

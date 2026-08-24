@@ -17,6 +17,7 @@ import '../../services/recommendation_service.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
+import '../../shared/widgets/feedback_dialog.dart';
 
 class ActivityDetailScreen extends ConsumerStatefulWidget {
   final String activityId;
@@ -178,6 +179,16 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
         duration: const Duration(seconds: 2),
       ),
     );
+
+    // ★やってみてどうでしたか？（★5評価 ＆ 詳しく教えるダイアログを自動表示）
+    await FeedbackDialog.showActivityFeedback(
+      context,
+      activityId: played.id,
+      activityTitle: played.title,
+      childNames: selectedChildNames,
+    );
+
+    if (!mounted) return;
 
     // 想定時間が30分未満の場合は運動効果を補完する遊びを提案
     if (played.durationMinutes < 30) {

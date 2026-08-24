@@ -12,6 +12,7 @@ import '../features/profile/profile_screen.dart';
 import '../features/recommendation/recommendation_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/splash/splash_screen.dart';
+import '../features/feedback_dashboard/feedback_dashboard_screen.dart';
 import 'routes.dart';
 
 import '../features/all_activities/all_activities_screen.dart';
@@ -71,6 +72,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.allActivities,
             builder: (context, state) => const AllActivitiesScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.feedbackDashboard,
+            builder: (context, state) => const FeedbackDashboardScreen(),
           ),
         ],
       ),
