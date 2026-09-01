@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/app_feedback.dart';
 import '../../repositories/feedback_repository.dart';
+import '../../services/analytics_service.dart';
 import 'custom_button.dart';
 
 /// 個別遊びまたはアプリ全体のフィードバックダイアログ
@@ -78,6 +79,11 @@ class _FeedbackDialogState extends ConsumerState<FeedbackDialog> {
     );
 
     await ref.read(feedbackListProvider.notifier).addFeedback(feedback);
+
+    ref.read(analyticsServiceProvider).logSubmitFeedback(
+          feedbackType: widget.type.name,
+          activityId: widget.activityId,
+        );
 
     if (mounted) {
       Navigator.of(context).pop();

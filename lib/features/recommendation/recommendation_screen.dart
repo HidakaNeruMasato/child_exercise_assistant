@@ -10,6 +10,7 @@ import '../../models/scored_activity.dart';
 import '../../repositories/activity_repository.dart';
 import '../../routing/routes.dart';
 import '../../services/recommendation_service.dart';
+import '../../services/analytics_service.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
 
@@ -47,6 +48,7 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
         _recommendations = results;
         _isLoading = false;
       });
+      ref.read(analyticsServiceProvider).logViewRecommendations(recommendationCount: results.length);
     }
   }
 

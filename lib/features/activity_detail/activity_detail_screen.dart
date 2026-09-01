@@ -14,6 +14,7 @@ import '../../repositories/favorite_repository.dart';
 import '../../repositories/history_repository.dart';
 import '../../routing/routes.dart';
 import '../../services/recommendation_service.dart';
+import '../../services/analytics_service.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
@@ -65,6 +66,11 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
         _similarActivities = candidates.take(3).toList();
         _isLoading = false;
       });
+
+      ref.read(analyticsServiceProvider).logViewActivity(
+            activityId: data.id,
+            category: data.locationTypes.map((e) => e.name).join(','),
+          );
     }
   }
 
@@ -168,6 +174,11 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
           played,
           rating: 5,
           childNames: selectedChildNames,
+        );
+
+    ref.read(analyticsServiceProvider).logCompleteActivity(
+          activityId: played.id,
+          participantsCount: selectedChildNames.length,
         );
 
     if (!mounted) return;
@@ -373,6 +384,10 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
               ref
                   .read(favoritesStateProvider.notifier)
                   .toggleFavorite(userId, activity);
+              ref.read(analyticsServiceProvider).logFavoriteActivity(
+                    activityId: activity.id,
+                    isAdded: !isFav,
+                  );
             },
           ),
         ],

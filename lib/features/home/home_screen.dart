@@ -9,6 +9,7 @@ import '../../models/activity.dart';
 import '../../models/recommendation_condition.dart';
 import '../../models/notification_settings.dart';
 import '../../services/notification_service.dart';
+import '../../services/analytics_service.dart';
 import '../../repositories/activity_repository.dart';
 import '../../repositories/auth_repository.dart';
 import '../../routing/routes.dart';
@@ -16,10 +17,25 @@ import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(analyticsServiceProvider).logViewHome();
+    });
+  }
+
   void _showConditionEditModal(BuildContext context, WidgetRef ref) {
+    ref.read(analyticsServiceProvider).logOpenCondition();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -316,7 +332,10 @@ class HomeScreen extends ConsumerWidget {
 
                         CustomButton(
                           text: '設定を決定して閉じる',
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () {
+                            ref.read(analyticsServiceProvider).logChangeCondition(currentCond);
+                            Navigator.of(context).pop();
+                          },
                         ),
                       ],
                     ),
@@ -331,7 +350,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(authRepositoryProvider).currentUser;
     final activitiesAsync = ref.watch(activityRepositoryProvider).getAllActivities();
     final currentCondition = ref.watch(recommendationConditionProvider);
@@ -545,6 +564,7 @@ class HomeScreen extends ConsumerWidget {
                     text: 'この条件でおすすめを検索',
                     icon: Icons.search_rounded,
                     onPressed: () {
+                      ref.read(analyticsServiceProvider).logSearchRecommendations(currentCondition);
                       context.push(AppRoutes.recommendations);
                     },
                   ),
