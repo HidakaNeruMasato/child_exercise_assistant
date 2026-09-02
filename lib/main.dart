@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
+import 'firebase_options.dart';
 import 'routing/app_router.dart';
 import 'services/crashlytics_service.dart';
 
@@ -13,7 +14,9 @@ void main() async {
 
   // Firebase Core & Crashlytics, Analytics 設定
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await CrashlyticsService.initialize();
   } catch (e) {
     if (kDebugMode) {
