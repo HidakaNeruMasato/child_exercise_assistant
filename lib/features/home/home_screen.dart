@@ -642,7 +642,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   textStyle: const TextStyle(fontSize: 13, decoration: TextDecoration.underline),
                 ),
                 icon: const Icon(Icons.list_alt_rounded, size: 16),
-                label: const Text('すべての遊び・運動一覧を見る（全200件）'),
+                label: const Text('すべての遊び・運動一覧を見る（全50件）'),
                 onPressed: () {
                   context.push(AppRoutes.allActivities);
                 },
