@@ -18,7 +18,7 @@ class ActivityImageView extends StatelessWidget {
   ActivityImageView({
     super.key,
     required Activity activity,
-    this.fit = BoxFit.cover,
+    this.fit = BoxFit.contain,
     this.width,
     this.height,
     this.fallbackWidget,
@@ -27,7 +27,7 @@ class ActivityImageView extends StatelessWidget {
   ActivityImageView.withId({
     super.key,
     required this.activityId,
-    this.fit = BoxFit.cover,
+    this.fit = BoxFit.contain,
     this.width,
     this.height,
     this.fallbackWidget,

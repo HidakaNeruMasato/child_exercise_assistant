@@ -267,6 +267,27 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
                   final activity = scored.activity;
                   final rank = index + 1;
 
+                  final isWide = MediaQuery.of(context).size.width >= 600;
+
+                  Widget buildImageContainer() {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryContainer.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: ActivityImageView(
+                            activity: activity,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return CustomCard(
                     onTap: () {
                       context.push(AppRoutes.buildActivityDetailPath(activity.id));
@@ -274,100 +295,164 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: SizedBox(
-                              height: 120,
-                              width: double.infinity,
-                              child: ActivityImageView(
-                                activity: activity,
-                                fit: BoxFit.cover,
+                        if (isWide)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 180,
+                                child: buildImageContainer(),
                               ),
-                            ),
+                              const Gap(16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 32,
+                                          height: 32,
+                                          decoration: BoxDecoration(
+                                            color: rank == 1
+                                                ? AppTheme.tertiaryColor
+                                                : AppTheme.primaryContainer,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '$rank',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const Gap(10),
+                                        Expanded(
+                                          child: Text(
+                                            activity.title,
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: List.generate(5, (starIndex) {
+                                            final isFilled = starIndex < scored.starRating;
+                                            return Icon(
+                                              isFilled ? Icons.star_rounded : Icons.star_border_rounded,
+                                              color: isFilled ? const Color(0xFFFFB800) : Colors.grey.shade400,
+                                              size: 16,
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
+                                    const Gap(6),
+                                    Text(
+                                      activity.description,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            color: AppTheme.textMutedColor,
+                                          ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        else ...[
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: buildImageContainer(),
                           ),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: rank == 1
-                                    ? AppTheme.tertiaryColor
-                                    : AppTheme.primaryContainer,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$rank',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: rank == 1
+                                      ? AppTheme.tertiaryColor
+                                      : AppTheme.primaryContainer,
+                                  shape: BoxShape.circle,
                                 ),
-                              ),
-                            ),
-                            const Gap(12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    activity.title,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                          fontSize: 18,
-                                        ),
-                                  ),
-                                  const Gap(4),
-                                  Text(
-                                    activity.description,
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          color: AppTheme.textMutedColor,
-                                        ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: List.generate(5, (starIndex) {
-                                    final isFilled = starIndex < scored.starRating;
-                                    return Icon(
-                                      isFilled ? Icons.star_rounded : Icons.star_border_rounded,
-                                      color: isFilled ? const Color(0xFFFFB800) : Colors.grey.shade400,
-                                      size: 18,
-                                    );
-                                  }),
-                                ),
-                                const Gap(4),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.primaryContainer.withOpacity(0.4),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                                child: Center(
                                   child: Text(
-                                    scored.starLabel,
+                                    '$rank',
                                     style: const TextStyle(
-                                      fontSize: 11,
                                       fontWeight: FontWeight.bold,
-                                      color: AppTheme.primaryColor,
+                                      color: Colors.white,
+                                      fontSize: 18,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              const Gap(12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      activity.title,
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            fontSize: 18,
+                                          ),
+                                    ),
+                                    const Gap(4),
+                                    Text(
+                                      activity.description,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            color: AppTheme.textMutedColor,
+                                          ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: List.generate(5, (starIndex) {
+                                      final isFilled = starIndex < scored.starRating;
+                                      return Icon(
+                                        isFilled ? Icons.star_rounded : Icons.star_border_rounded,
+                                        color: isFilled ? const Color(0xFFFFB800) : Colors.grey.shade400,
+                                        size: 18,
+                                      );
+                                    }),
+                                  ),
+                                  const Gap(4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.primaryContainer.withOpacity(0.4),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      scored.starLabel,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                         const Gap(12),
                         const Divider(height: 1),
                         const Gap(10),

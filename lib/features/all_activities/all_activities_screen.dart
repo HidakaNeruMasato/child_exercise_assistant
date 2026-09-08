@@ -306,63 +306,144 @@ class _AllActivitiesScreenState extends ConsumerState<AllActivitiesScreen> {
                               ),
                             );
                           }
-
                           final activity = displayed[index];
                           final isFavorite = favorites.any((f) => f.activityId == activity.id);
+
+                          final isWide = MediaQuery.of(context).size.width >= 600;
+
+                          Widget buildImageContainer() {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryContainer.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: ActivityImageView(
+                                    activity: activity,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
 
                           return CustomCard(
                             onTap: () {
                               context.push(AppRoutes.buildActivityDetailPath(activity.id));
                             },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        activity.title,
-                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
+                            child: isWide
+                                ? Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 180,
+                                        child: buildImageContainer(),
+                                      ),
+                                      const Gap(16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    activity.title,
+                                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                          fontSize: 17,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                                    color: isFavorite ? Colors.red : Colors.grey,
+                                                  ),
+                                                  onPressed: () {
+                                                    final userId = ref.read(authRepositoryProvider).currentUser?.uid ?? '';
+                                                    ref
+                                                        .read(favoritesStateProvider.notifier)
+                                                        .toggleFavorite(userId, activity);
+                                                  },
+                                                ),
+                                              ],
                                             ),
+                                            const Gap(4),
+                                            Text(
+                                              activity.description,
+                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                    color: AppTheme.textMutedColor,
+                                                  ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const Gap(10),
+                                            Wrap(
+                                              spacing: 6,
+                                              runSpacing: 6,
+                                              children: [
+                                                TagChip(
+                                                  label: '${activity.minAge}〜${activity.maxAge}歳',
+                                                  icon: Icons.child_care_rounded,
+                                                ),
+                                                TagChip(
+                                                  label: '${activity.durationMinutes}分',
+                                                  icon: Icons.timer_outlined,
+                                                ),
+                                                TagChip(
+                                                  label: activity.intensityLevel.label,
+                                                  icon: Icons.bolt_rounded,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                        color: isFavorite ? Colors.red : Colors.grey,
+                                    ],
+                                  )
+                                : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              activity.title,
+                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                              color: isFavorite ? Colors.red : Colors.grey,
+                                            ),
+                                            onPressed: () {
+                                              final userId = ref.read(authRepositoryProvider).currentUser?.uid ?? '';
+                                              ref
+                                                  .read(favoritesStateProvider.notifier)
+                                                  .toggleFavorite(userId, activity);
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                      onPressed: () {
-                                        final userId = ref.read(authRepositoryProvider).currentUser?.uid ?? '';
-                                        ref
-                                            .read(favoritesStateProvider.notifier)
-                                            .toggleFavorite(userId, activity);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const Gap(8),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: SizedBox(
-                                    height: 120,
-                                    width: double.infinity,
-                                    child: ActivityImageView(
-                                      activity: activity,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const Gap(4),
-                                Text(
-                                  activity.description,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: AppTheme.textMutedColor,
+                                      const Gap(8),
+                                      buildImageContainer(),
+                                      const Gap(8),
+                                      Text(
+                                        activity.description,
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                              color: AppTheme.textMutedColor,
+                                            ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
                                 const Gap(10),
                                 Wrap(
                                   spacing: 6,

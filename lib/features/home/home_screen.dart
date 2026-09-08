@@ -604,7 +604,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 if (isMobile) {
                   // スマホ時: 横スライド表示
                   return SizedBox(
-                    height: 230,
+                    height: 280,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: list.length,
@@ -658,25 +658,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildPopularActivityCard(BuildContext context, Activity item) {
     return CustomCard(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       onTap: () {
         context.push(AppRoutes.buildActivityDetailPath(item.id));
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 90,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppTheme.secondaryContainer.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: ActivityImageView(
-                activity: item,
-                fit: BoxFit.cover,
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.primaryContainer.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: ActivityImageView(
+                  activity: item,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),

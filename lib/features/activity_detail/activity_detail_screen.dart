@@ -399,18 +399,25 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 2D動作解説イラスト
-            ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.cardRadius),
-              child: Container(
-                height: 220,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryContainer.withOpacity(0.2),
-                ),
-                child: ActivityImageView(
-                  activity: activity,
-                  fit: BoxFit.cover,
-                  fallbackWidget: _buildPlaceholderImage(),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppTheme.cardRadius),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryContainer.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(AppTheme.cardRadius),
+                    ),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: ActivityImageView(
+                        activity: activity,
+                        fit: BoxFit.contain,
+                        fallbackWidget: _buildPlaceholderImage(),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
