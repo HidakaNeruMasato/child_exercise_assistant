@@ -1,98 +1,83 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// 遊びの画像を表示する汎用ウィジェット
-/// アセットパス (assets/..., web/assets/...) や ネットワークURL (http...) を自動判別し、
-/// 読み込み失敗時には互換パスおよびWeb静的直アクセスへの多重フォールバックを試みます。
+import '../../models/activity.dart';
+
+/// 全画面共通の遊び画像解決・描画コンポーネント
+///
+/// 画面側からは [activity] (または [activityId]) を渡すだけで、
+/// 統一ルール `assets/images/{activity_id}.webp` に従って自動的に画像を取得・表示します。
+/// 画像が存在しない場合でもクラッシュせず、フォールバックを表示します。
 class ActivityImageView extends StatelessWidget {
-  final String? imageUrl;
+  final String activityId;
   final BoxFit fit;
   final double? width;
   final double? height;
   final Widget? fallbackWidget;
 
-  const ActivityImageView({
+  ActivityImageView({
     super.key,
-    required this.imageUrl,
+    required Activity activity,
+    this.fit = BoxFit.cover,
+    this.width,
+    this.height,
+    this.fallbackWidget,
+  }) : activityId = activity.id;
+
+  ActivityImageView.withId({
+    super.key,
+    required this.activityId,
     this.fit = BoxFit.cover,
     this.width,
     this.height,
     this.fallbackWidget,
   });
 
+  /// activity_id から決定されるアセット画像パスの統一取得関数
+  static String getImagePath(String id) {
+    return 'assets/images/$id.webp';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final String imagePath = getImagePath(activityId);
+
     final defaultFallback = fallbackWidget ??
-        Center(
-          child: Icon(
-            Icons.sports_kabaddi_rounded,
-            size: 40,
-            color: Theme.of(context).colorScheme.primary,
+        Container(
+          color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.sports_kabaddi_rounded,
+                  size: 36,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                if (kDebugMode) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    '未登録: $activityId',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         );
 
-    if (imageUrl == null || imageUrl!.trim().isEmpty) {
-      return defaultFallback;
-    }
-
-    final rawUrl = imageUrl!.trim();
-
-    // 絶対URL (http:// や https://)
-    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
-      return Image.network(
-        rawUrl,
-        width: width,
-        height: height,
-        fit: fit,
-        errorBuilder: (_, __, ___) => defaultFallback,
-      );
-    }
-
-    // アセット画像パスの解決バリエーション
-    final String cleanPath = rawUrl.startsWith('web/') ? rawUrl.substring(4) : rawUrl; // e.g. assets/images/activity_tag_chase.jpg
-    final String webPath = rawUrl.startsWith('web/') ? rawUrl : 'web/$rawUrl'; // e.g. web/assets/images/activity_tag_chase.jpg
-    final String fileName = rawUrl.split('/').last; // e.g. activity_tag_chase.jpg
-
-    // Web環境での静的ネットワークURLフォールバック一覧
-    final webNetworkUrls = [
-      rawUrl,
-      webPath,
-      cleanPath,
-      'web/assets/images/$fileName',
-      'assets/images/$fileName',
-    ];
-
-    Widget buildWebNetworkFallback(int index) {
-      if (index >= webNetworkUrls.length) return defaultFallback;
-      final urlCandidate = webNetworkUrls[index];
-      return Image.network(
-        urlCandidate,
-        width: width,
-        height: height,
-        fit: fit,
-        errorBuilder: (_, __, ___) => buildWebNetworkFallback(index + 1),
-      );
-    }
-
-    // アセット試行チェーン
     return Image.asset(
-      webPath,
+      imagePath,
       width: width,
       height: height,
       fit: fit,
-      errorBuilder: (_, __, ___) {
-        return Image.asset(
-          cleanPath,
-          width: width,
-          height: height,
-          fit: fit,
-          errorBuilder: (_, __, ___) {
-            if (kIsWeb) {
-              return buildWebNetworkFallback(0);
-            }
-            return defaultFallback;
-          },
-        );
+      errorBuilder: (context, error, stackTrace) {
+        return defaultFallback;
       },
     );
   }

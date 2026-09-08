@@ -408,7 +408,7 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                   color: AppTheme.primaryContainer.withOpacity(0.2),
                 ),
                 child: ActivityImageView(
-                  imageUrl: activity.imageUrl,
+                  activity: activity,
                   fit: BoxFit.cover,
                   fallbackWidget: _buildPlaceholderImage(),
                 ),

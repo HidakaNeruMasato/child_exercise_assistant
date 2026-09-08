@@ -342,20 +342,18 @@ class _AllActivitiesScreenState extends ConsumerState<AllActivitiesScreen> {
                                     ),
                                   ],
                                 ),
-                                if (activity.imageUrl != null) ...[
-                                  const Gap(8),
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: SizedBox(
-                                      height: 120,
-                                      width: double.infinity,
-                                      child: ActivityImageView(
-                                        imageUrl: activity.imageUrl,
-                                        fit: BoxFit.cover,
-                                      ),
+                                const Gap(8),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: SizedBox(
+                                    height: 120,
+                                    width: double.infinity,
+                                    child: ActivityImageView(
+                                      activity: activity,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                ],
+                                ),
                                 const Gap(4),
                                 Text(
                                   activity.description,

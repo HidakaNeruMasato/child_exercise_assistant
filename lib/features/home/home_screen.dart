@@ -675,7 +675,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: ActivityImageView(
-                imageUrl: item.imageUrl,
+                activity: item,
                 fit: BoxFit.cover,
               ),
             ),

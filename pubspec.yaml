@@ -53,5 +53,3 @@ flutter:
   assets:
     - assets/images/
     - assets/data/
-    - web/assets/images/
-    - web/assets/data/

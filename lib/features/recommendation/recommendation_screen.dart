@@ -274,21 +274,20 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (activity.imageUrl != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: SizedBox(
-                                height: 120,
-                                width: double.infinity,
-                                child: ActivityImageView(
-                                  imageUrl: activity.imageUrl,
-                                  fit: BoxFit.cover,
-                                ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: SizedBox(
+                              height: 120,
+                              width: double.infinity,
+                              child: ActivityImageView(
+                                activity: activity,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
+                        ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
