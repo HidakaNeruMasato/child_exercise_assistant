@@ -13,6 +13,7 @@ abstract class ActivityRepository {
 /// Firebase / CSV / InMemory 統合 ActivityRepository 実装
 class FirestoreActivityRepository implements ActivityRepository {
   List<Activity>? _cachedActivities;
+  static List<Activity> get seedActivities => _seedActivities;
   // 初期マスターシードデータ（50種類のバリエーション豊かな構造化遊びデータ）
   static final List<Activity> _seedActivities = [
     // 1

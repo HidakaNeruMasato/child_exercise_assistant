@@ -1,74 +1,92 @@
 import 'dart:io';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:child_exercise_assistant/repositories/activity_repository.dart';
 import 'package:csv/csv.dart';
+import 'package:child_exercise_assistant/repositories/activity_repository.dart';
 
 void main() {
-  test('Export 100 activities to CSV file', () async {
-    final List<List<dynamic>> allRows = [];
+  print('=== 100件の遊びデータCSVフル生成スクリプト ===');
 
-    // Header row
+  // 1. act_001 〜 act_050 (RepositoryのseedActivities)
+  final activities50 = FirestoreActivityRepository.seedActivities;
+
+  final List<List<dynamic>> allRows = [];
+
+  // Header row
+  allRows.add([
+    'ID', 'タイトル', '説明文', '最小対象年齢', '最大対象年齢', '最小参加人数', '最大参加人数',
+    '想定時間(分)', '実施場所', '準備する道具', '運動強度', '難易度', '伸ばせる能力',
+    '雨天OK', '屋内OK', '安全レベル', '安全Tips', '遊ぶ手順', '親の参加度',
+    '親の声掛け例', '推し季節', '画像URL'
+  ]);
+
+  for (final a in activities50) {
     allRows.add([
-      'ID', 'タイトル', '説明文', '最小対象年齢', '最大対象年齢', '最小参加人数', '最大参加人数',
-      '想定時間(分)', '実施場所', '準備する道具', '運動強度', '難易度', '伸ばせる能力',
-      '雨天OK', '屋内OK', '安全レベル', '安全Tips', '遊ぶ手順', '親の参加度',
-      '親の声掛け例', '推し季節', '画像URL'
+      a.id,
+      a.title,
+      a.description,
+      a.minAge,
+      a.maxAge,
+      a.minParticipants,
+      a.maxParticipants,
+      a.durationMinutes,
+      a.locationTypes.map((e) => e.name).join(';'),
+      a.toolsRequired.join(';'),
+      a.intensityLevel.name,
+      a.difficultyLevel.name,
+      a.trainableAbilities.map((e) => e.name).join(';'),
+      a.isRainOk ? 'はい' : 'いいえ',
+      a.isIndoorOk ? 'はい' : 'いいえ',
+      a.safetyLevel,
+      a.safetyTips.join(';'),
+      a.steps.join(';'),
+      a.parentInvolvement.name,
+      a.parentPraiseTips.join(';'),
+      a.seasons.map((e) => e.name).join(';'),
+      'assets/images/${a.id}.webp',
     ]);
+  }
 
-    // 1 〜 50
-    final seed50 = FirestoreActivityRepository.seedActivities;
-    for (final a in seed50) {
-      allRows.add([
-        a.id,
-        a.title,
-        a.description,
-        a.minAge,
-        a.maxAge,
-        a.minParticipants,
-        a.maxParticipants,
-        a.durationMinutes,
-        a.locationTypes.map((e) => e.name).join(';'),
-        a.toolsRequired.join(';'),
-        a.intensityLevel.name,
-        a.difficultyLevel.name,
-        a.trainableAbilities.map((e) => e.name).join(';'),
-        a.isRainOk ? 'はい' : 'いいえ',
-        a.isIndoorOk ? 'はい' : 'いいえ',
-        a.safetyLevel,
-        a.safetyTips.join(';'),
-        a.steps.join(';'),
-        a.parentInvolvement.name,
-        a.parentPraiseTips.join(';'),
-        a.seasons.map((e) => e.name).join(';'),
-        'assets/images/${a.id}.webp',
-      ]);
+  print('1〜50件のデータの変換完了 (${allRows.length - 1} 件)');
+
+  // 2. act_051 〜 act_100
+  final newActivities = _getNewActivities51To100();
+  for (final act in newActivities) {
+    act[21] = 'assets/images/${act[0]}.webp';
+    allRows.add(act);
+  }
+
+  print('51〜100件のデータの追加完了 (合計: ${allRows.length - 1} 件)');
+
+  // CSV変換 & 書き込み (UTF-8 BOM付き)
+  final csvOutput = '\uFEFF' + const ListToCsvConverter().convert(allRows);
+
+  final paths = [
+    'assets/data/activities.csv',
+    'web/assets/data/activities.csv',
+  ];
+
+  for (final p in paths) {
+    final file = File(p);
+    file.parent.createSync(recursive: true);
+    file.writeAsStringSync(csvOutput);
+    print('Saved CSV to: ${file.path}');
+  }
+
+  // 3. WebP画像ファイルの補完作成 (act_001.webp〜act_100.webp)
+  final templateFile = File('assets/images/act_001.webp');
+  final templateBytes = templateFile.existsSync() ? templateFile.readAsBytesSync() : <int>[];
+
+  int createdCount = 0;
+  for (int i = 1; i <= 100; i++) {
+    final idStr = i < 10 ? 'act_00$i' : (i < 100 ? 'act_0$i' : 'act_100');
+    final imgFile = File('assets/images/$idStr.webp');
+    if (!imgFile.existsSync() && templateBytes.isNotEmpty) {
+      imgFile.writeAsBytesSync(templateBytes);
+      createdCount++;
     }
+  }
+  print('アセット画像補完作成: $createdCount 件');
 
-    // 51 〜 100
-    final new50 = _getNewActivities51To100();
-    for (final act in new50) {
-      act[21] = 'assets/images/${act[0]}.webp';
-      allRows.add(act);
-    }
-
-    expect(allRows.length - 1, 100);
-
-    final csvOutput = '\uFEFF' + const ListToCsvConverter().convert(allRows);
-
-    final paths = [
-      'assets/data/activities.csv',
-      'web/assets/data/activities.csv',
-    ];
-
-    for (final p in paths) {
-      final file = File(p);
-      file.parent.createSync(recursive: true);
-      file.writeAsStringSync(csvOutput);
-      expect(file.existsSync(), true);
-    }
-
-    print('Successfully exported ${allRows.length - 1} activities to CSV.');
-  });
+  print('=== 正常完了 ===');
 }
 
 List<List<dynamic>> _getNewActivities51To100() {
