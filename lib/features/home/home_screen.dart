@@ -16,6 +16,7 @@ import '../../routing/routes.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
+import '../../shared/widgets/activity_image_view.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -673,25 +674,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: item.imageUrl != null
-                  ? Image.asset(
-                      item.imageUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Center(
-                        child: Icon(
-                          Icons.sports_kabaddi_rounded,
-                          size: 40,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    )
-                  : Center(
-                      child: Icon(
-                        Icons.sports_kabaddi_rounded,
-                        size: 40,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
+              child: ActivityImageView(
+                imageUrl: item.imageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const Gap(10),

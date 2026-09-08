@@ -1231,28 +1231,37 @@ class FirestoreActivityRepository implements ActivityRepository {
       return _cachedActivities!;
     }
 
-    try {
-      final csvString = await rootBundle.loadString('assets/data/activities.csv');
-      // BOMヘッダー除去
-      final cleanCsv = csvString.startsWith('\uFEFF')
-          ? csvString.substring(1)
-          : csvString;
+    String? csvString;
+    for (final path in ['assets/data/activities.csv', 'web/assets/data/activities.csv']) {
+      try {
+        csvString = await rootBundle.loadString(path);
+        if (csvString.isNotEmpty) break;
+      } catch (_) {}
+    }
 
-      final rows = const CsvToListConverter().convert(cleanCsv);
-      if (rows.length > 1) {
-        final list = <Activity>[];
-        for (int i = 1; i < rows.length; i++) {
-          final row = rows[i];
-          if (row.isEmpty || row[0].toString().trim().isEmpty) continue;
-          list.add(Activity.fromCsvRow(row));
+    if (csvString != null && csvString.isNotEmpty) {
+      try {
+        // BOMヘッダー除去
+        final cleanCsv = csvString.startsWith('\uFEFF')
+            ? csvString.substring(1)
+            : csvString;
+
+        final rows = const CsvToListConverter().convert(cleanCsv);
+        if (rows.length > 1) {
+          final list = <Activity>[];
+          for (int i = 1; i < rows.length; i++) {
+            final row = rows[i];
+            if (row.isEmpty || row[0].toString().trim().isEmpty) continue;
+            list.add(Activity.fromCsvRow(row));
+          }
+          if (list.isNotEmpty) {
+            _cachedActivities = list;
+            return list;
+          }
         }
-        if (list.isNotEmpty) {
-          _cachedActivities = list;
-          return list;
-        }
+      } catch (_) {
+        // ロード失敗時や環境未対応時はフォールバック
       }
-    } catch (_) {
-      // ロード失敗時や環境未対応時はフォールバック
     }
 
     _cachedActivities = _seedActivities;

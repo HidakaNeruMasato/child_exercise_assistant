@@ -19,6 +19,7 @@ import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
 import '../../shared/widgets/feedback_dialog.dart';
+import '../../shared/widgets/activity_image_view.dart';
 
 class ActivityDetailScreen extends ConsumerStatefulWidget {
   final String activityId;
@@ -406,19 +407,11 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                 decoration: BoxDecoration(
                   color: AppTheme.primaryContainer.withOpacity(0.2),
                 ),
-                child: activity.imageUrl != null
-                    ? (activity.imageUrl!.startsWith('assets/')
-                        ? Image.asset(
-                            activity.imageUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _buildPlaceholderImage(),
-                          )
-                        : Image.network(
-                            activity.imageUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _buildPlaceholderImage(),
-                          ))
-                    : _buildPlaceholderImage(),
+                child: ActivityImageView(
+                  imageUrl: activity.imageUrl,
+                  fit: BoxFit.cover,
+                  fallbackWidget: _buildPlaceholderImage(),
+                ),
               ),
             ),
             const Gap(8),

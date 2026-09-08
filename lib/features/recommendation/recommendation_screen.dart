@@ -13,6 +13,7 @@ import '../../services/recommendation_service.dart';
 import '../../services/analytics_service.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
+import '../../shared/widgets/activity_image_view.dart';
 
 class RecommendationScreen extends ConsumerStatefulWidget {
   const RecommendationScreen({super.key});
@@ -281,9 +282,10 @@ class _RecommendationScreenState extends ConsumerState<RecommendationScreen> {
                               child: SizedBox(
                                 height: 120,
                                 width: double.infinity,
-                                child: activity.imageUrl!.startsWith('assets/')
-                                    ? Image.asset(activity.imageUrl!, fit: BoxFit.cover)
-                                    : Image.network(activity.imageUrl!, fit: BoxFit.cover),
+                                child: ActivityImageView(
+                                  imageUrl: activity.imageUrl,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),

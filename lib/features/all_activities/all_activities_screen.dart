@@ -12,6 +12,7 @@ import '../../repositories/auth_repository.dart';
 import '../../routing/routes.dart';
 import '../../shared/widgets/custom_card.dart';
 import '../../shared/widgets/tag_chip.dart';
+import '../../shared/widgets/activity_image_view.dart';
 
 class AllActivitiesScreen extends ConsumerStatefulWidget {
   const AllActivitiesScreen({super.key});
@@ -341,6 +342,20 @@ class _AllActivitiesScreenState extends ConsumerState<AllActivitiesScreen> {
                                     ),
                                   ],
                                 ),
+                                if (activity.imageUrl != null) ...[
+                                  const Gap(8),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: SizedBox(
+                                      height: 120,
+                                      width: double.infinity,
+                                      child: ActivityImageView(
+                                        imageUrl: activity.imageUrl,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                                 const Gap(4),
                                 Text(
                                   activity.description,
