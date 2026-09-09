@@ -353,7 +353,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authRepositoryProvider).currentUser;
-    final activitiesAsync = ref.watch(activityRepositoryProvider).getAllActivities();
+    final activitiesAsync = ref.watch(allActivitiesProvider);
     final currentCondition = ref.watch(recommendationConditionProvider);
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -590,13 +590,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             const Gap(12),
 
-            FutureBuilder<List<Activity>>(
-              future: activitiesAsync,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final list = snapshot.data ?? [];
+            activitiesAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, stack) => const Text('表示できる遊びがありません'),
+              data: (list) {
                 if (list.isEmpty) {
                   return const Text('表示できる遊びがありません');
                 }
@@ -619,15 +616,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   );
                 } else {
-                  // PC時: スライドせず画面幅にピタッと収まる4件を表示
-                  final pcItems = list.take(4).toList();
-                  return Row(
-                    children: pcItems.map((item) {
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: _buildPopularActivityCard(context, item),
-                        ),
+                  // PC時: 2列グリッド表示
+                  return Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: list.take(6).map((item) {
+                      return SizedBox(
+                        width: (MediaQuery.of(context).size.width - 72) / 2,
+                        child: _buildPopularActivityCard(context, item),
                       );
                     }).toList(),
                   );
@@ -643,7 +639,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   textStyle: const TextStyle(fontSize: 13, decoration: TextDecoration.underline),
                 ),
                 icon: const Icon(Icons.list_alt_rounded, size: 16),
-                label: const Text('すべての遊び・運動一覧を見る（全50件）'),
+                label: const Text('すべての遊び・運動一覧を見る（全100件）'),
                 onPressed: () {
                   context.push(AppRoutes.allActivities);
                 },

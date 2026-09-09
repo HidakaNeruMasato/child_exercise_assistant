@@ -1284,3 +1284,10 @@ class FirestoreActivityRepository implements ActivityRepository {
 final activityRepositoryProvider = Provider<ActivityRepository>((ref) {
   return FirestoreActivityRepository();
 });
+
+/// 全ての遊び・運動データを取得・キャッシュするRiverpod FutureProvider
+final allActivitiesProvider = FutureProvider<List<Activity>>((ref) async {
+  final repository = ref.watch(activityRepositoryProvider);
+  return repository.getAllActivities();
+});
+

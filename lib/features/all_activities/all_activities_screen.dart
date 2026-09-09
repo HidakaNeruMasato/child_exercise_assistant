@@ -131,25 +131,16 @@ class _AllActivitiesScreenState extends ConsumerState<AllActivitiesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final activitiesAsync = ref.watch(activityRepositoryProvider).getAllActivities();
-    final favoriteIds = ref.watch(favoriteRepositoryProvider);
+    final activitiesAsync = ref.watch(allActivitiesProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('遊び・運動ライブラリ（全件表示）'),
       ),
-      body: FutureBuilder<List<Activity>>(
-        future: activitiesAsync,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError || !snapshot.hasData) {
-            return const Center(child: Text('データの読み込みに失敗しました'));
-          }
-
-          final allActivities = snapshot.data!;
+      body: activitiesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => const Center(child: Text('データの読み込みに失敗しました')),
+        data: (allActivities) {
           final favorites = ref.watch(favoritesStateProvider);
           final filtered = _filterActivities(allActivities);
           final displayed = filtered.take(_displayedCount).toList();
@@ -331,6 +322,7 @@ class _AllActivitiesScreenState extends ConsumerState<AllActivitiesScreen> {
                           }
 
                           return CustomCard(
+                            key: ValueKey(activity.id),
                             onTap: () {
                               context.push(AppRoutes.buildActivityDetailPath(activity.id));
                             },
