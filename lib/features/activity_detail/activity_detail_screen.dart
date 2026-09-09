@@ -610,9 +610,10 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                         const Icon(Icons.record_voice_over_rounded, color: Colors.green),
                         const Gap(8),
                         Text(
-                          '親からの声掛け例（モチベーションUP！）',
+                          'できた時の声掛け例（モチベーションUP！）',
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 color: Colors.green.shade800,
+                                fontWeight: FontWeight.bold,
                               ),
                         ),
                       ],
@@ -640,6 +641,63 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: Colors.green.shade900,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(16),
+            ],
+
+            // うまくいっていなさそうなときの声掛け例 (Support Tips)
+            if (activity.parentSupportTips.isNotEmpty) ...[
+              CustomCard(
+                backgroundColor: const Color(0xFFFFF8E1),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.favorite_rounded, color: Colors.orange),
+                        const Gap(8),
+                        Text(
+                          'うまくいっていなさそうなときの声掛け例',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: Colors.orange.shade900,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const Gap(12),
+                    ...activity.parentSupportTips.map(
+                      (support) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.orange.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.format_quote_rounded,
+                                  size: 20, color: Colors.orange),
+                              const Gap(8),
+                              Expanded(
+                                child: Text(
+                                  support,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.orange.shade900,
                                       ),
                                 ),
                               ),

@@ -12,12 +12,15 @@ void main() {
       'ID', 'タイトル', '説明文', '最小対象年齢', '最大対象年齢', '最小参加人数', '最大参加人数',
       '想定時間(分)', '実施場所', '準備する道具', '運動強度', '難易度', '伸ばせる能力',
       '雨天OK', '屋内OK', '安全レベル', '安全Tips', '遊ぶ手順', '親の参加度',
-      '親の声掛け例', '推し季節', '画像URL'
+      '親の声掛け例', '推し季節', '画像URL', 'うまくいっていなさそうな時の声掛け例'
     ]);
 
     // 1 〜 50
     final seed50 = FirestoreActivityRepository.seedActivities;
     for (final a in seed50) {
+      final supportTips = a.parentSupportTips.isNotEmpty
+          ? a.parentSupportTips.join(';')
+          : _getSupportTipForAbilities(a.trainableAbilities.map((e) => e.name).join(';'));
       allRows.add([
         a.id,
         a.title,
@@ -41,6 +44,7 @@ void main() {
         a.parentPraiseTips.join(';'),
         a.seasons.map((e) => e.name).join(';'),
         'assets/images/${a.id}.webp',
+        supportTips,
       ]);
     }
 
@@ -48,6 +52,10 @@ void main() {
     final new50 = _getNewActivities51To100();
     for (final act in new50) {
       act[21] = 'assets/images/${act[0]}.webp';
+      if (act.length == 22) {
+        final abilitiesStr = act[12].toString();
+        act.add(_getSupportTipForAbilities(abilitiesStr));
+      }
       allRows.add(act);
     }
 
@@ -174,4 +182,18 @@ List<List<dynamic>> _getNewActivities51To100() {
     // 100
     ['act_100', '親子で100回ハイタッチダンス', '好きな音楽をかけて踊りながら、リズムに合わせて100回ハイタッチを目指す最高の絆アップダンス！', 2, 12, 2, 6, 10, 'indoor;yard', 'なし（道具不要）', 'high', 'easy', 'rhythm;cooperation', 'はい', 'はい', 5, '跳びはねて足首を痛めないよう適度なペースで行いましょう。', 'ごきげんな音楽をかけます。;親子で手をつないだりステップを踏みながら踊ります。;「1, 2, 3...!」と声を合わせて100回ハイタッチを達成します！', 'active', '「100回ハイタッチ達成！最高の笑顔とチームワーク！」;「音楽に合わせてノリノリで踊る姿がキラキラしてる！」;「親子で全身動かして心が通じ合ったね！」', 'spring;summer;autumn;winter', 'assets/images/act_100.webp'],
   ];
+}
+
+String _getSupportTipForAbilities(String abilitiesStr) {
+  if (abilitiesStr.contains('balance')) {
+    return '「グラグラしても大丈夫！両手を横にパーッと広げるとバランスが取りやすくなるよ」';
+  } else if (abilitiesStr.contains('cooperation')) {
+    return '「『せーの！』で声を掛け合ってみよう！パパ/ママも一緒に応援・手伝うね」';
+  } else if (abilitiesStr.contains('agility') || abilitiesStr.contains('stamina')) {
+    return '「無理しなくて大丈夫だよ！一呼吸おいて自分のペースでやってみよう」';
+  } else if (abilitiesStr.contains('thinking')) {
+    return '「難しくても大丈夫！どこから試すかパパ/ママと一緒に考えてみよう」';
+  } else {
+    return '「失敗しても全然平気！もう一回ゆっくり自分のペースでチャレンジしてみようね」';
+  }
 }

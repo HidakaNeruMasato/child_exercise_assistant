@@ -21,7 +21,8 @@ class Activity {
   final List<String> safetyTips;
   final List<String> steps;
   final ParentInvolvementLevel parentInvolvement; // 親の参加度
-  final List<String> parentPraiseTips; // 親からの声掛け例
+  final List<String> parentPraiseTips; // 親からの声掛け例（できた時）
+  final List<String> parentSupportTips; // うまくいっていなさそうなときの声掛け例
   final List<Season> seasons; // 推奨・適正季節（オールシーズン対応含む）
   final String? imageUrl;
 
@@ -46,6 +47,7 @@ class Activity {
     required this.steps,
     this.parentInvolvement = ParentInvolvementLevel.moderate,
     this.parentPraiseTips = const [],
+    this.parentSupportTips = const [],
     this.seasons = Season.values,
     this.imageUrl,
   });
@@ -72,6 +74,7 @@ class Activity {
       'steps': steps,
       'parentInvolvement': parentInvolvement.name,
       'parentPraiseTips': parentPraiseTips,
+      'parentSupportTips': parentSupportTips,
       'seasons': seasons.map((e) => e.name).toList(),
       'imageUrl': imageUrl,
     };
@@ -118,6 +121,10 @@ class Activity {
           json['parentInvolvement'] as String? ??
               ParentInvolvementLevel.moderate.name),
       parentPraiseTips: (json['parentPraiseTips'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      parentSupportTips: (json['parentSupportTips'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -212,6 +219,20 @@ class Activity {
       steps: listVal(17),
       parentInvolvement: parentInv,
       parentPraiseTips: listVal(19),
+      parentSupportTips: listVal(22).isNotEmpty
+          ? listVal(22)
+          : [
+              if (abilities.contains(AbilityType.balance))
+                '「グラグラしても大丈夫！両手を横にパーッと広げるとバランスが取りやすくなるよ」'
+              else if (abilities.contains(AbilityType.cooperation))
+                '「『せーの！』で声を掛け合ってみよう！パパ/ママも一緒に応援・手伝うね」'
+              else if (abilities.contains(AbilityType.agility) || abilities.contains(AbilityType.stamina))
+                '「無理しなくて大丈夫だよ！一呼吸おいて自分のペースでやってみよう」'
+              else if (abilities.contains(AbilityType.thinking))
+                '「難しくても大丈夫！どこから試すかパパ/ママと一緒に考えてみよう」'
+              else
+                '「失敗しても全然平気！もう一回ゆっくり自分のペースでチャレンジしてみようね」'
+            ],
       seasons: seasons.isNotEmpty ? seasons : Season.values,
       imageUrl: str(21).isNotEmpty ? str(21) : null,
     );
