@@ -427,7 +427,7 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                 const Icon(Icons.accessibility_new_rounded, size: 18, color: AppTheme.primaryColor),
                 const Gap(6),
                 Text(
-                  'フォーム解説: イラストで肘・膝の曲げ方やポーズを確認できます',
+                  '遊びのポイント: イラストで肘・膝の曲げ方やポーズを確認できます',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.w600,
