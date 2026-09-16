@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>「こどもと、なにしよう。」画像制作品質レビュー</title>
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --border-radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-color); margin: 0; padding: 20px; color: var(--text-color); }
+    
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    h1 { font-size: 22px; color: #1a252c; margin: 0; display: flex; align-items: center; gap: 10px; }
+
+    .token-bar { display: flex; align-items: center; gap: 10px; background: #fff; padding: 8px 15px; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 13px; }
+    .token-status { font-weight: bold; }
+    .token-status.connected { color: #28a745; }
+    .token-status.disconnected { color: #dc3545; }
+
+    .filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; background: #fff; padding: 12px; border-radius: var(--border-radius); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .filter-btn { padding: 6px 14px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+    .filter-btn.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .card { background: var(--card-bg); border-radius: var(--border-radius); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; position: relative; }
+    .card-img-container { width: 100%; height: 190px; background: #eaeff2; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .card-img-container:hover::after { content: "🔍 クリックで拡大表示"; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: #fff; text-align: center; padding: 5px; font-size: 11px; }
+    .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .badge { position: absolute; top: 10px; right: 10px; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; color: #fff; text-transform: uppercase; z-index: 2; }
+    .badge-APPROVED, .badge-REGISTERED { background: #28a745; }
+    .badge-HUMAN_REVIEW { background: #17a2b8; }
+    .badge-REPAIR_REQUIRED { background: #ffc107; color: #000; }
+    .badge-REGENERATE_REQUIRED, .badge-REJECTED { background: #dc3545; }
+    .badge-PROMPT_GENERATED, .badge-NOT_STARTED { background: #6c757d; }
+
+    .card-body { padding: 15px; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 16px; font-weight: bold; margin: 0 0 4px 0; color: #1a252c; }
+    .card-sub { font-size: 12px; color: #777; margin-bottom: 10px; }
+    .inspection-box { background: #f8f9fa; border-left: 4px solid #17a2b8; padding: 10px; font-size: 12px; margin-bottom: 12px; border-radius: 4px; line-height: 1.4; }
+    .inspection-box.FAIL { border-left-color: #dc3545; }
+    .inspection-box.WARNING { border-left-color: #ffc107; }
+    
+    .actions { display: flex; gap: 8px; margin-top: auto; }
+    .btn { flex: 1; padding: 8px 4px; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; text-align: center; }
+    .btn:hover { opacity: 0.85; }
+    .btn-approve { background: #28a745; color: #fff; }
+    .btn-repair { background: #ffc107; color: #000; }
+    .btn-regenerate { background: #dc3545; color: #fff; }
+    .btn-settings { background: #6c757d; color: #fff; padding: 6px 12px; border-radius: 16px; font-size: 12px; border: none; cursor: pointer; }
+
+    /* Modal / Lightbox Styles */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal-content { background: #fff; border-radius: 12px; max-width: 90vw; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
+    .modal-header { padding: 12px 20px; background: #1a252c; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h2 { margin: 0; font-size: 16px; }
+    .modal-close { font-size: 24px; cursor: pointer; color: #aaa; border: none; background: none; }
+    .modal-close:hover { color: #fff; }
+    .modal-body { overflow: auto; text-align: center; background: #111; padding: 10px; flex: 1; display: flex; align-items: center; justify-content: center; }
+    .modal-body img { max-width: 85vw; max-height: 65vh; object-fit: contain; border-radius: 4px; }
+    .modal-footer { padding: 15px; background: #f8f9fa; display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* Token Config Modal */
+    .config-modal { max-width: 500px; width: 90vw; }
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+    .form-group input { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+    .help-text { font-size: 11px; color: #666; margin-top: 4px; line-height: 1.4; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #323232; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; display: none; z-index: 2000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .toast.show { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎨 「こどもと、なにしよう。」画像制作品質レビュー</h1>
+    <div class="token-bar">
+      <span>GitHub連携: <span id="token-status" class="token-status disconnected">未設定</span></span>
+      <button class="btn-settings" onclick="openConfigModal()">⚙️ GitHub設定</button>
+    </div>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterStatus('ALL')">すべて (<span id="cnt-ALL">0</span>)</button>
+    <button class="filter-btn" onclick="filterStatus('HUMAN_REVIEW')">人間確認待ち (<span id="cnt-HUMAN_REVIEW">0</span>)</button>
+    <button class="filter-btn" onclick="filterStatus('REPAIR_REQUIRED')">修正要 (<span id="cnt-REPAIR_REQUIRED">0</span>)</button>
+    <button class="filter-btn" onclick="filterStatus('REGENERATE_REQUIRED')">再生成要 (<span id="cnt-REGENERATE_REQUIRED">0</span>)</button>
+    <button class="filter-btn" onclick="filterStatus('APPROVED')">承認済み (<span id="cnt-APPROVED">0</span>)</button>
+    <button class="filter-btn" onclick="filterStatus('REGISTERED')">アプリ登録済み (<span id="cnt-REGISTERED">0</span>)</button>
+  </div>
+
+  <div class="grid" id="card-grid"></div>
+
+  <!-- Zoom Lightbox Modal -->
+  <div class="modal-overlay" id="image-modal" onclick="closeModalOnOverlay(event, 'image-modal')">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">画像拡大表示</h2>
+        <button class="modal-close" onclick="closeModal('image-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img id="modal-img" src="" alt="拡大画像">
+      </div>
+      <div class="modal-footer" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- Config Modal -->
+  <div class="modal-overlay" id="config-modal" onclick="closeModalOnOverlay(event, 'config-modal')">
+    <div class="modal-content config-modal">
+      <div class="modal-header">
+        <h2>GitHub 連携設定</h2>
+        <button class="modal-close" onclick="closeModal('config-modal')">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <div class="form-group">
+          <label for="gh-token">GitHub Personal Access Token (PAT)</label>
+          <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+          <div class="help-text">
+            GitHub 画面上から「承認」「修正」「再生成」を押した際に、直接リポジトリへコミットを送信するために使用します。<br>
+            ※ トークンはブラウザの `localStorage` にのみ保存され、外部へ送信されません。<br>
+            ※ 権限: `repo` または `contents:write` が必要です。
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="gh-repo">対象リポジトリ</label>
+          <input type="text" id="gh-repo" value="HidakaNeruMasato/child_exercise_assistant">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" style="background:#ddd;" onclick="closeModal('config-modal')">キャンセル</button>
+        <button class="btn btn-approve" onclick="saveConfig()">保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    let allItems = [];
+    let currentFilter = 'ALL';
+    let ghToken = localStorage.getItem('gh_pat_token') || '';
+    let ghRepo = localStorage.getItem('gh_repo') || 'HidakaNeruMasato/child_exercise_assistant';
+
+    function init() {
+      updateTokenStatus();
+      loadData();
+    }
+
+    function updateTokenStatus() {
+      const el = document.getElementById('token-status');
+      if (ghToken) {
+        el.innerText = '連携済み (PAT保存中)';
+        el.className = 'token-status connected';
+      } else {
+        el.innerText = '未設定 (ローカル保存モード)';
+        el.className = 'token-status disconnected';
+      }
+    }
+
+    function openConfigModal() {
+      document.getElementById('gh-token').value = ghToken;
+      document.getElementById('gh-repo').value = ghRepo;
+      document.getElementById('config-modal').classList.add('open');
+    }
+
+    function saveConfig() {
+      ghToken = document.getElementById('gh-token').value.trim();
+      ghRepo = document.getElementById('gh-repo').value.trim() || 'HidakaNeruMasato/child_exercise_assistant';
+      localStorage.setItem('gh_pat_token', ghToken);
+      localStorage.setItem('gh_repo', ghRepo);
+      updateTokenStatus();
+      closeModal('config-modal');
+      showToast('GitHub設定を保存しました');
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch('./data/items.json?t=' + Date.now());
+        if (!res.ok) throw new Error('Data load failed');
+        allItems = await res.json();
+      } catch (e) {
+        console.warn('Failed to load ./data/items.json, using fallback data if available.', e);
+        allItems = [];
+      }
+      
+      // LocalStorage オーバーライド適用
+      const localStatus = JSON.parse(localStorage.getItem('local_status_overrides') || '{}');
+      allItems.forEach(item => {
+        if (localStatus[item.activity_id]) {
+          item.status = localStatus[item.activity_id];
+        }
+      });
+
+      updateCounts();
+      renderGrid();
+    }
+
+    function updateCounts() {
+      const counts = { ALL: allItems.length, HUMAN_REVIEW: 0, REPAIR_REQUIRED: 0, REGENERATE_REQUIRED: 0, APPROVED: 0, REGISTERED: 0 };
+      allItems.forEach(item => {
+        const st = item.status || 'NOT_STARTED';
+        if (counts[st] !== undefined) counts[st]++;
+      });
+      for (const k in counts) {
+        const el = document.getElementById('cnt-' + k);
+        if (el) el.innerText = counts[k];
+      }
+    }
+
+    function filterStatus(st) {
+      currentFilter = st;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      renderGrid();
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('card-grid');
+      grid.innerHTML = '';
+
+      const filtered = allItems.filter(item => {
+        if (currentFilter === 'ALL') return true;
+        return (item.status || 'NOT_STARTED') === currentFilter;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">該当するアクティビティはありません。</div>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const id = item.activity_id;
+        const title = item.title || '無題';
+        const status = item.status || 'NOT_STARTED';
+        const insp = item.inspection || {};
+        const actionRec = insp.recommended_action || 'なし';
+        const probs = (insp.problems || []).join('; ') || '特記事項なし';
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        const ts = Date.now();
+        
+        // 画像優先パス
+        const imgPath = `./images/${id}.jpg?t=${ts}`;
+        const fallbackImgPath = `./images/${id}.webp?t=${ts}`;
+
+        card.innerHTML = `
+          <div class="card-img-container" onclick="openModal('${id}', '${title}')">
+            <img src="${imgPath}" onerror="this.src='${fallbackImgPath}'; this.onerror=function(){this.style.display='none';}" alt="${title}">
+            <div class="badge badge-${status}">${status}</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${id} ${title}</div>
+            <div class="card-sub">修正回数: ${item.repair_count || 0} / 生成回数: ${item.generation_count || 0}</div>
+            <div class="inspection-box ${insp.status || 'PASS'}">
+              <strong>AI判定: ${insp.status || '未検査'} (推奨: ${actionRec})</strong><br>
+              指摘: ${probs}
+            </div>
+            <div class="actions">
+              <button class="btn btn-approve" onclick="doAction('${id}', 'APPROVE')">承認 (APPROVE)</button>
+              <button class="btn btn-repair" onclick="doAction('${id}', 'REPAIR')">修正 (REPAIR)</button>
+              <button class="btn btn-regenerate" onclick="doAction('${id}', 'REGENERATE')">再生成 (REGENERATE)</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(id, title) {
+      const ts = Date.now();
+      document.getElementById('modal-title').innerText = id + ' ' + title + ' (拡大表示)';
+      const modalImg = document.getElementById('modal-img');
+      modalImg.src = './images/' + id + '.jpg?t=' + ts;
+      modalImg.onerror = function() { modalImg.src = './images/' + id + '.webp?t=' + ts; };
+
+      const footer = document.getElementById('modal-actions');
+      footer.innerHTML = `
+        <button class="btn btn-approve" onclick="doAction('${id}', 'APPROVE'); closeModal('image-modal');">承認 (APPROVE)</button>
+        <button class="btn btn-repair" onclick="doAction('${id}', 'REPAIR'); closeModal('image-modal');">修正 (REPAIR)</button>
+        <button class="btn btn-regenerate" onclick="doAction('${id}', 'REGENERATE'); closeModal('image-modal');">再生成 (REGENERATE)</button>
+      `;
+
+      document.getElementById('image-modal').classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+
+    function closeModalOnOverlay(e, modalId) {
+      if (e.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal('image-modal');
+        closeModal('config-modal');
+      }
+    });
+
+    async function doAction(activityId, action) {
+      let targetItem = allItems.find(i => i.activity_id === activityId);
+      if (!targetItem) return;
+
+      const newStatus = action === 'APPROVE' ? 'APPROVED' : (action === 'REPAIR' ? 'REPAIR_REQUIRED' : 'REGENERATE_REQUIRED');
+      targetItem.status = newStatus;
+      targetItem.updated_at = new Date().toISOString();
+
+      // ローカルストレージ更新
+      const localStatus = JSON.parse(localStorage.getItem('local_status_overrides') || '{}');
+      localStatus[activityId] = newStatus;
+      localStorage.setItem('local_status_overrides', JSON.stringify(localStatus));
+
+      updateCounts();
+      renderGrid();
+
+      // GitHub Tokenが登録されている場合は直接コミット送信
+      if (ghToken) {
+        showToast(`${activityId} を ${newStatus} に変更中 (GitHub同期中)...`);
+        const success = await commitToGitHub(activityId, targetItem);
+        if (success) {
+          showToast(`✅ ${activityId} のステータスを GitHub にコミットしました`);
+        } else {
+          showToast(`⚠️ GitHubコミット失敗 (ローカル保存済み)`);
+        }
+      } else {
+        showToast(`ℹ️ ${activityId} を ${newStatus} に更新しました (ローカル保存)`);
+      }
+    }
+
+    async function commitToGitHub(activityId, itemData) {
+      try {
+        const path = `tools/image_pipeline/metadata/${activityId}.json`;
+        const getUrl = `https://api.github.com/repos/${ghRepo}/contents/${path}`;
+        
+        // 1. SHA取得
+        const getRes = await fetch(getUrl, {
+          headers: { 'Authorization': `token ${ghToken}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        
+        let sha = '';
+        if (getRes.ok) {
+          const fileInfo = await getRes.json();
+          sha = fileInfo.sha;
+        }
+
+        // 2. PUTでアップデートコミット
+        const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(itemData, null, 2))));
+        const putRes = await fetch(getUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${ghToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `chore(image_pipeline): update ${activityId} status to ${itemData.status} via review UI`,
+            content: contentEncoded,
+            sha: sha || undefined
+          })
+        });
+
+        return putRes.ok;
+      } catch (e) {
+        console.error('GitHub API error:', e);
+        return false;
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
