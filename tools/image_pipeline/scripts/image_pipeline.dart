@@ -41,6 +41,10 @@ void main(List<String> args) async {
       await _runScript('tools/image_pipeline/scripts/publish_review_data.dart', subArgs);
       break;
 
+    case 'deploy':
+      await _runScript('tools/image_pipeline/scripts/deploy_gh_pages.dart', subArgs);
+      break;
+
     case 'review':
       print('ℹ️  GitHub Pages 上のレビュー UI: https://hidakanerumasato.github.io/child_exercise_assistant/review/');
       print('ℹ️  ローカルレビューサーバーを起動中...');

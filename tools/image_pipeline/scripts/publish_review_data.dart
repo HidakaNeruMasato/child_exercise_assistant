@@ -7,11 +7,21 @@ void main(List<String> args) async {
   print('====================================================');
 
   final metadataDir = Directory('tools/image_pipeline/metadata');
-  final webDataDir = Directory('web/review/data');
-  final webImagesDir = Directory('web/review/images');
+  final buildWebReviewDir = Directory('build/web/review');
+  final webDataDir = Directory('build/web/review/data');
+  final webImagesDir = Directory('build/web/review/images');
 
   if (!webDataDir.existsSync()) webDataDir.createSync(recursive: true);
   if (!webImagesDir.existsSync()) webImagesDir.createSync(recursive: true);
+
+  // web/review/index.html を build/web/review/index.html へコピー
+  final sourceHtml = File('web/review/index.html');
+  if (sourceHtml.existsSync()) {
+    sourceHtml.copySync('${buildWebReviewDir.path}/index.html');
+    print('✅ HTMLコピー完了: web/review/index.html -> build/web/review/index.html');
+  } else {
+    print('Warning: web/review/index.html が見つかりません。');
+  }
 
   if (!metadataDir.existsSync()) {
     print('Error: tools/image_pipeline/metadata ディレクトリが存在しません。');
@@ -78,5 +88,5 @@ void main(List<String> args) async {
   print('✅ メタデータ出力完了: ${itemsJsonFile.path} (${items.length} 件)');
   print('✅ レビュー用画像同期完了: ${webImagesDir.path} ($imageCopiedCount 件)');
   print('----------------------------------------------------');
-  print('これで `web/review/` 配下に静的レビューサイト用のアセットが準備されました。');
+  print('これで `build/web/review/` 配下に静的レビューサイト用のアセットが準備されました。');
 }
