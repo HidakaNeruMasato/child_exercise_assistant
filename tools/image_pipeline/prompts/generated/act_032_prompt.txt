@@ -1,0 +1,32 @@
+Japanese picture book style illustration for a children's activity and exercise educational app.
+
+[PLAY ACTIVITY DETAILS]
+Activity ID: act_032
+Title: 信号機ゲーム（青・赤・黄）
+Description: 「青」で猛ダッシュ、「黄」でゆっくり歩き、「赤」でピタッと停止！指示への即時反応力を養う運動。
+Target Age: 3 to 8 years old
+Number of Children: 2 to 6 children
+Location: park;yard;indoor
+Tools Required: None (no equipment required)
+Key Action & Motion: 「青」で猛ダッシュ、「黄」でゆっくり歩き、「赤」でピタッと停止！指示への即時反応力を養う運動。
+Step-by-Step Play Procedure: 大人が信号機役になり掛け声をかけます。 -> 「青！」でダッシュ、「黄！」でスローモーション、「赤！」でストップ。 -> 反応速度を競って楽しみます。
+
+[ART STYLE & VISUAL GUIDELINES]
+- Character Design: Japanese children (2 to 6 children). Friendly, healthy, and smiling faces.
+- Line Art: Soft, thick, hand-drawn black outlines (educational picture book illustration style).
+- Coloring: Flat, bright pastel colors. Strictly NO heavy 3D textures, NO gradients, NO realistic shading.
+- Background: Minimal, clean white background. Only minimal ground/floor line or necessary equipment (like a cone or tape line).
+- Aspect Ratio: 16:9 widescreen composition, full-body view showing the entire play action clearly.
+
+[STRICT ANATOMY & SAFETY RULES]
+- Exactly 2 arms per person (1 left arm, 1 right arm). Absolutely NO extra arms (3+ arms prohibited).
+- Exactly 2 legs per person (1 left leg, 1 right leg). Absolutely NO extra legs (3+ legs prohibited).
+- Exactly 1 hand attached naturally at the end of each wrist. NO extra floating hands.
+- Shoulders, elbows, wrists, and hands must connect naturally and seamlessly.
+- Separate individuals clearly; do NOT fuse bodies or clothes of multiple children together.
+- Show safe, natural body postures suitable for young children.
+
+[PROHIBITED ELEMENTS]
+- NO text, NO letters, NO numbers, NO titles, NO Japanese/English characters.
+- NO speech bubbles, NO dialogue boxes.
+- NO logos, NO watermarks, NO signatures.

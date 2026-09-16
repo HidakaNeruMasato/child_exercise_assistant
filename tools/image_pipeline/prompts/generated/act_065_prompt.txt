@@ -1,0 +1,32 @@
+Japanese picture book style illustration for a children's activity and exercise educational app.
+
+[PLAY ACTIVITY DETAILS]
+Activity ID: act_065
+Title: ハンカチ落とし忍者版
+Description: 足音を立てずに忍び足で輪の後ろを回り、ハンカチをそっと落として逃げる伝統鬼ごっこ！
+Target Age: 4 to 10 years old
+Number of Children: 3 to 8 children
+Location: indoor;park
+Tools Required: タオル
+Key Action & Motion: 足音を立てずに忍び足で輪の後ろを回り、ハンカチをそっと落として逃げる伝統鬼ごっこ！
+Step-by-Step Play Procedure: 全員で内側を向いて座ります。 -> 鬼はハンカチを持って外側をそっと歩きます。 -> 誰かの後ろにハンカチを落としたらダッシュ！落とされた人は追いかけます！
+
+[ART STYLE & VISUAL GUIDELINES]
+- Character Design: Japanese children (3 to 8 children). Friendly, healthy, and smiling faces.
+- Line Art: Soft, thick, hand-drawn black outlines (educational picture book illustration style).
+- Coloring: Flat, bright pastel colors. Strictly NO heavy 3D textures, NO gradients, NO realistic shading.
+- Background: Minimal, clean white background. Only minimal ground/floor line or necessary equipment (like a cone or tape line).
+- Aspect Ratio: 16:9 widescreen composition, full-body view showing the entire play action clearly.
+
+[STRICT ANATOMY & SAFETY RULES]
+- Exactly 2 arms per person (1 left arm, 1 right arm). Absolutely NO extra arms (3+ arms prohibited).
+- Exactly 2 legs per person (1 left leg, 1 right leg). Absolutely NO extra legs (3+ legs prohibited).
+- Exactly 1 hand attached naturally at the end of each wrist. NO extra floating hands.
+- Shoulders, elbows, wrists, and hands must connect naturally and seamlessly.
+- Separate individuals clearly; do NOT fuse bodies or clothes of multiple children together.
+- Show safe, natural body postures suitable for young children.
+
+[PROHIBITED ELEMENTS]
+- NO text, NO letters, NO numbers, NO titles, NO Japanese/English characters.
+- NO speech bubbles, NO dialogue boxes.
+- NO logos, NO watermarks, NO signatures.

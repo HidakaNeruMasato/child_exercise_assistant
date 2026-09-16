@@ -1,0 +1,32 @@
+Japanese picture book style illustration for a children's activity and exercise educational app.
+
+[PLAY ACTIVITY DETAILS]
+Activity ID: act_009
+Title: 落ち葉・どんぐりトレジャーハンター
+Description: 「赤くて大きな葉っぱ」「丸いどんぐり」などお題に合う自然の宝物を探して公園をのんびり探索。
+Target Age: 2 to 7 years old
+Number of Children: 1 to 4 children
+Location: park;spacious
+Tools Required: None (no equipment required)
+Key Action & Motion: 「赤くて大きな葉っぱ」「丸いどんぐり」などお題に合う自然の宝物を探して公園をのんびり探索。
+Step-by-Step Play Procedure: 保護者が「宝物カード（お題）」を出します。 -> 公園の中を探検しながらお題にぴったりな落ち葉や枝を探します。 -> 見つけたら「発見！」と宣言して宝箱（袋）にしまおう。
+
+[ART STYLE & VISUAL GUIDELINES]
+- Character Design: Japanese children (1 to 4 children). Friendly, healthy, and smiling faces.
+- Line Art: Soft, thick, hand-drawn black outlines (educational picture book illustration style).
+- Coloring: Flat, bright pastel colors. Strictly NO heavy 3D textures, NO gradients, NO realistic shading.
+- Background: Minimal, clean white background. Only minimal ground/floor line or necessary equipment (like a cone or tape line).
+- Aspect Ratio: 16:9 widescreen composition, full-body view showing the entire play action clearly.
+
+[STRICT ANATOMY & SAFETY RULES]
+- Exactly 2 arms per person (1 left arm, 1 right arm). Absolutely NO extra arms (3+ arms prohibited).
+- Exactly 2 legs per person (1 left leg, 1 right leg). Absolutely NO extra legs (3+ legs prohibited).
+- Exactly 1 hand attached naturally at the end of each wrist. NO extra floating hands.
+- Shoulders, elbows, wrists, and hands must connect naturally and seamlessly.
+- Separate individuals clearly; do NOT fuse bodies or clothes of multiple children together.
+- Show safe, natural body postures suitable for young children.
+
+[PROHIBITED ELEMENTS]
+- NO text, NO letters, NO numbers, NO titles, NO Japanese/English characters.
+- NO speech bubbles, NO dialogue boxes.
+- NO logos, NO watermarks, NO signatures.

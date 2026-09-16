@@ -1,0 +1,78 @@
+# 品質検査ルール定義 (quality_rules.yaml)
+
+anatomical_checks:
+  1_arm_count:
+    name: "腕が左右2本か"
+    fail_condition: "いずれかの人物の腕が3本以上、または1本以下（欠損）の場合"
+    action_on_fail: "REPAIR"
+  2_leg_count:
+    name: "脚が左右2本か"
+    fail_condition: "いずれかの人物の脚が3本以上、または1本以下の場合"
+    action_on_fail: "REPAIR"
+  3_hand_count:
+    name: "手の数が不自然でないか"
+    fail_condition: "腕の先端以外から手が生えている、または手が3つ以上ある場合"
+    action_on_fail: "REPAIR"
+  4_finger_count:
+    name: "指が大きく崩れていないか"
+    fail_condition: "指の数が6本以上、または奇妙にくっついている場合"
+    action_on_fail: "REPAIR"
+  5_arm_shoulder_connection:
+    name: "腕と肩が自然につながっているか"
+    fail_condition: "肩から独立した位置から腕が生えている場合"
+    action_on_fail: "REPAIR"
+  6_leg_hip_connection:
+    name: "脚と身体が自然につながっているか"
+    fail_condition: "胴体から浮いて脚が浮遊している場合"
+    action_on_fail: "REPAIR"
+  7_facial_features:
+    name: "顔が大きく崩れていないか"
+    fail_condition: "目や口の位置が大きく崩壊している場合"
+    action_on_fail: "REPAIR"
+  8_person_fusion:
+    name: "人物同士が融合していないか"
+    fail_condition: "2人の身体や服装が1つに結合してしまっている場合"
+    action_on_fail: "REGENERATE"
+
+composition_checks:
+  9_people_count:
+    name: "指定人数と一致しているか"
+    fail_condition: "CSVに指定された人数（例: 2人）と描かれた人数が異なる場合"
+    action_on_fail: "REGENERATE"
+  10_cropping:
+    name: "人物が途中で不自然に切れていないか"
+    fail_condition: "画面端で頭や体が不自然に断裁されている場合"
+    action_on_fail: "REGENERATE"
+  11_action_clarity:
+    name: "遊びの動作が分かるか"
+    fail_condition: "CSVの「主な動作」「手順」が画像から読み取れない場合"
+    action_on_fail: "REGENERATE"
+  12_tools_accuracy:
+    name: "指定した道具が正しく描かれているか"
+    fail_condition: "指定道具（風船・縄跳び・フリスビー等）が全く違うものになっている場合"
+    action_on_fail: "REGENERATE"
+  13_safety:
+    name: "危険な動作になっていないか"
+    fail_condition: "関節の不自然な折れ曲がりや過度に危険な姿勢の場合"
+    action_on_fail: "REPAIR"
+
+design_checks:
+  14_style_consistency:
+    name: "現在のシリーズの画風と大きく違わないか"
+    fail_condition: "3Dグラデーションや劇画風、アニメ風など基準画像と異なる画風の場合"
+    action_on_fail: "REGENERATE"
+  15_background_simplicity:
+    name: "背景が適切か"
+    fail_condition: "過度に複雑・カラフルな部屋や風景が描かれている場合"
+    action_on_fail: "REPAIR"
+  16_no_text:
+    name: "文字が勝手に入っていないか"
+    fail_condition: "英数字、漢字、ひらがな、記号が画面内に生成されている場合"
+    action_on_fail: "REPAIR"
+  17_no_watermarks:
+    name: "ロゴや透かしが入っていないか"
+    fail_condition: "ウォーターマークや署名、ロゴ状のマークが入っている場合"
+    action_on_fail: "REPAIR"
+
+limits:
+  max_repair_attempts: 2

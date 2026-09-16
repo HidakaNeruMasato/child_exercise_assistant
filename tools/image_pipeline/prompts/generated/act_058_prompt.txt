@@ -1,0 +1,32 @@
+Japanese picture book style illustration for a children's activity and exercise educational app.
+
+[PLAY ACTIVITY DETAILS]
+Activity ID: act_058
+Title: 室内ペンギン氷上歩き
+Description: 足の甲にクッションやぬいぐるみを乗せて落とさないようによちよち歩く体幹バランスあそび！
+Target Age: 2 to 5 years old
+Number of Children: 1 to 4 children
+Location: indoor
+Tools Required: None (no equipment required)
+Key Action & Motion: 足の甲にクッションやぬいぐるみを乗せて落とさないようによちよち歩く体幹バランスあそび！
+Step-by-Step Play Procedure: 足の甲の上に小さなクッションやぬいぐるみを乗せます。 -> ペンギンのように手を横に広げてよちよち歩きます。 -> 落とさずに部屋の端から端まで歩けたら大成功！
+
+[ART STYLE & VISUAL GUIDELINES]
+- Character Design: Japanese children (1 to 4 children). Friendly, healthy, and smiling faces.
+- Line Art: Soft, thick, hand-drawn black outlines (educational picture book illustration style).
+- Coloring: Flat, bright pastel colors. Strictly NO heavy 3D textures, NO gradients, NO realistic shading.
+- Background: Minimal, clean white background. Only minimal ground/floor line or necessary equipment (like a cone or tape line).
+- Aspect Ratio: 16:9 widescreen composition, full-body view showing the entire play action clearly.
+
+[STRICT ANATOMY & SAFETY RULES]
+- Exactly 2 arms per person (1 left arm, 1 right arm). Absolutely NO extra arms (3+ arms prohibited).
+- Exactly 2 legs per person (1 left leg, 1 right leg). Absolutely NO extra legs (3+ legs prohibited).
+- Exactly 1 hand attached naturally at the end of each wrist. NO extra floating hands.
+- Shoulders, elbows, wrists, and hands must connect naturally and seamlessly.
+- Separate individuals clearly; do NOT fuse bodies or clothes of multiple children together.
+- Show safe, natural body postures suitable for young children.
+
+[PROHIBITED ELEMENTS]
+- NO text, NO letters, NO numbers, NO titles, NO Japanese/English characters.
+- NO speech bubbles, NO dialogue boxes.
+- NO logos, NO watermarks, NO signatures.

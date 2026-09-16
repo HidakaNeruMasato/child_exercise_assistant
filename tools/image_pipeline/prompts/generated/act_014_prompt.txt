@@ -1,0 +1,32 @@
+Japanese picture book style illustration for a children's activity and exercise educational app.
+
+[PLAY ACTIVITY DETAILS]
+Activity ID: act_014
+Title: しっぽ取り鬼ごっこ
+Description: ズボンの後ろにタオルを挟み、お互いに「しっぽ」を奪い合う大人気のアクティブ運動！
+Target Age: 3 to 10 years old
+Number of Children: 2 to 8 children
+Location: park;yard;spacious
+Tools Required: タオル
+Key Action & Motion: ズボンの後ろにタオルを挟み、お互いに「しっぽ」を奪い合う大人気のアクティブ運動！
+Step-by-Step Play Procedure: ズボンの背中側にタオルを半分垂らして挟みます。 -> 合図とともに走り回り、相手のしっぽを取ります。 -> 最後まで自分のしっぽを守り切った人の勝ち！
+
+[ART STYLE & VISUAL GUIDELINES]
+- Character Design: Japanese children (2 to 8 children). Friendly, healthy, and smiling faces.
+- Line Art: Soft, thick, hand-drawn black outlines (educational picture book illustration style).
+- Coloring: Flat, bright pastel colors. Strictly NO heavy 3D textures, NO gradients, NO realistic shading.
+- Background: Minimal, clean white background. Only minimal ground/floor line or necessary equipment (like a cone or tape line).
+- Aspect Ratio: 16:9 widescreen composition, full-body view showing the entire play action clearly.
+
+[STRICT ANATOMY & SAFETY RULES]
+- Exactly 2 arms per person (1 left arm, 1 right arm). Absolutely NO extra arms (3+ arms prohibited).
+- Exactly 2 legs per person (1 left leg, 1 right leg). Absolutely NO extra legs (3+ legs prohibited).
+- Exactly 1 hand attached naturally at the end of each wrist. NO extra floating hands.
+- Shoulders, elbows, wrists, and hands must connect naturally and seamlessly.
+- Separate individuals clearly; do NOT fuse bodies or clothes of multiple children together.
+- Show safe, natural body postures suitable for young children.
+
+[PROHIBITED ELEMENTS]
+- NO text, NO letters, NO numbers, NO titles, NO Japanese/English characters.
+- NO speech bubbles, NO dialogue boxes.
+- NO logos, NO watermarks, NO signatures.

@@ -413,7 +413,8 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                       aspectRatio: 16 / 9,
                       child: ActivityImageView(
                         activity: activity,
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
+                        enableZoom: true,
                         fallbackWidget: _buildPlaceholderImage(),
                       ),
                     ),

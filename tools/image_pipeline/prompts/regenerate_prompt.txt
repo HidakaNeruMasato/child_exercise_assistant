@@ -1,0 +1,11 @@
+REGENERATE FROM SCRATCH: Complete re-generation for activity {activity_id} ({title}).
+
+Previous generation was rejected due to structural issues: {rejection_reason}
+
+Please create a brand new 16:9 illustration following the master guidelines strictly:
+- Activity Action: {main_action}
+- Steps: {steps_text}
+- Correct Number of Children: {participant_text}
+- Master Art Style: Soft thick black hand-drawn outline, flat pastel colors, clean minimal white background.
+- Strict Anatomy: Exactly 2 arms and 2 legs per person, natural joints, no extra limbs, no person fusion.
+- No text, no logos, no speech bubbles.

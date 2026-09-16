@@ -1,0 +1,32 @@
+Japanese picture book style illustration for a children's activity and exercise educational app.
+
+[PLAY ACTIVITY DETAILS]
+Activity ID: act_018
+Title: 縄跳びニョロニョロヘビジャンプ
+Description: 地面に置いた縄跳びを大人がニョロニョロ揺らし、踏まないようにジャンプして跳び越える！
+Target Age: 3 to 8 years old
+Number of Children: 2 to 5 children
+Location: park;yard
+Tools Required: 縄跳び
+Key Action & Motion: 地面に置いた縄跳びを大人がニョロニョロ揺らし、踏まないようにジャンプして跳び越える！
+Step-by-Step Play Procedure: 大人が縄跳びの端を持ち、地面で左右に波立たせます。 -> 子どもは蛇に触れないよう「トビッ！」と跳び越えます。 -> 波を大きくしたり速くしたり変化をつけます。
+
+[ART STYLE & VISUAL GUIDELINES]
+- Character Design: Japanese children (2 to 5 children). Friendly, healthy, and smiling faces.
+- Line Art: Soft, thick, hand-drawn black outlines (educational picture book illustration style).
+- Coloring: Flat, bright pastel colors. Strictly NO heavy 3D textures, NO gradients, NO realistic shading.
+- Background: Minimal, clean white background. Only minimal ground/floor line or necessary equipment (like a cone or tape line).
+- Aspect Ratio: 16:9 widescreen composition, full-body view showing the entire play action clearly.
+
+[STRICT ANATOMY & SAFETY RULES]
+- Exactly 2 arms per person (1 left arm, 1 right arm). Absolutely NO extra arms (3+ arms prohibited).
+- Exactly 2 legs per person (1 left leg, 1 right leg). Absolutely NO extra legs (3+ legs prohibited).
+- Exactly 1 hand attached naturally at the end of each wrist. NO extra floating hands.
+- Shoulders, elbows, wrists, and hands must connect naturally and seamlessly.
+- Separate individuals clearly; do NOT fuse bodies or clothes of multiple children together.
+- Show safe, natural body postures suitable for young children.
+
+[PROHIBITED ELEMENTS]
+- NO text, NO letters, NO numbers, NO titles, NO Japanese/English characters.
+- NO speech bubbles, NO dialogue boxes.
+- NO logos, NO watermarks, NO signatures.

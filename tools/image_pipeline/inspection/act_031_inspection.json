@@ -1,0 +1,29 @@
+{
+  "activity_id": "act_031",
+  "title": "鏡あそびシンクロポーズ",
+  "status": "FAIL",
+  "checks": {
+    "1_arm_count": "PASS",
+    "2_leg_count": "PASS",
+    "3_hand_count": "PASS",
+    "4_finger_count": "WARNING",
+    "5_arm_shoulder_connection": "PASS",
+    "6_leg_hip_connection": "PASS",
+    "7_facial_features": "PASS",
+    "8_person_fusion": "PASS",
+    "9_people_count": "PASS",
+    "10_cropping": "PASS",
+    "11_action_clarity": "PASS",
+    "12_tools_accuracy": "PASS",
+    "13_safety": "PASS",
+    "14_style_consistency": "PASS",
+    "15_background_simplicity": "PASS",
+    "16_no_text": "PASS",
+    "17_no_watermarks": "PASS"
+  },
+  "problems": [
+    "修正上限回数(2回)に達したため、再生成を推奨します。"
+  ],
+  "recommended_action": "REGENERATE",
+  "inspected_at": "2026-09-14T16:16:35.507051"
+}

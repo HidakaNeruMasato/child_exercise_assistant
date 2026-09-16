@@ -1,0 +1,39 @@
+{
+  "activity_id": "act_032",
+  "title": "信号機ゲーム（青・赤・黄）",
+  "data_status": "VALID",
+  "missing_fields": [],
+  "status": "REGISTERED",
+  "generation_count": 1,
+  "repair_count": 0,
+  "updated_at": "2026-09-14T16:40:31.865236",
+  "inspection": {
+    "activity_id": "act_032",
+    "title": "信号機ゲーム（青・赤・黄）",
+    "status": "WARNING",
+    "checks": {
+      "1_arm_count": "PASS",
+      "2_leg_count": "PASS",
+      "3_hand_count": "PASS",
+      "4_finger_count": "WARNING",
+      "5_arm_shoulder_connection": "PASS",
+      "6_leg_hip_connection": "PASS",
+      "7_facial_features": "PASS",
+      "8_person_fusion": "PASS",
+      "9_people_count": "PASS",
+      "10_cropping": "PASS",
+      "11_action_clarity": "PASS",
+      "12_tools_accuracy": "PASS",
+      "13_safety": "PASS",
+      "14_style_consistency": "PASS",
+      "15_background_simplicity": "PASS",
+      "16_no_text": "PASS",
+      "17_no_watermarks": "PASS"
+    },
+    "problems": [],
+    "recommended_action": "APPROVE",
+    "inspected_at": "2026-09-14T16:16:35.509046"
+  },
+  "approved_at": "2026-09-14T16:10:55.677994",
+  "registered_at": "2026-09-14T16:40:31.864989"
+}

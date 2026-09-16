@@ -1,0 +1,35 @@
+# 「こどもと、なにしよう。」画像スタイル規定
+style_name: "Japanese Picture Book & Educational Material Style"
+aspect_ratio: "16:9"
+
+character_rules:
+  default_boy: "茶髪くるくるショートヘアー、健康的な体型、笑顔"
+  default_girl: "茶髪ロングヘアー、健康的な体型、笑顔"
+  proportions: "頭身が高すぎず、子どもの自然で元気な体系バランス"
+
+line_and_color:
+  outline: "太く柔らかい手描き黒輪郭線"
+  coloring: "フラットで明るいパステルカラー（立体感・グラデーション・過度な3D表現は不可）"
+  background: "白を基調とした極めてシンプルな背景（最低限の地面線やコーンのみ）"
+
+anatomic_rules:
+  arm_count: "各人物につき必ず左右合計2本の腕"
+  leg_count: "各人物につき必ず左右合計2本の脚"
+  hand_count: "各腕の先端に手は1つのみ"
+  finger_count: "各手につき自然な5本指"
+  connections:
+    - "肩から腕が滑らかに接続していること"
+    - "肘・手首・手が自然につながっていること"
+    - "腰から脚が自然につながっていること"
+  prohibitions:
+    - "腕が3本以上存在することの禁止"
+    - "脚が3本以上存在することの禁止"
+    - "手が余分に存在することの禁止"
+    - "人物同士の体が融着・融合することの禁止"
+
+forbidden_elements:
+  - "文字・テキスト・タイトル・説明文"
+  - "数字・記号"
+  - "吹き出し・セリフ"
+  - "ロゴ・ウォーターマーク・サイン"
+  - "過度なマンガ風エフェクト線・集中線"
